@@ -18,6 +18,11 @@
     </properties>
     <dependencies>
 
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
+        </dependency>
+
         <!-- h2 db -->
         <dependency>
             <groupId>com.h2database</groupId>
@@ -160,7 +165,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>com.huyvu.BackendApplication</mainClass>
+                            <mainClass>com.huhoot.BackendApplication</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
