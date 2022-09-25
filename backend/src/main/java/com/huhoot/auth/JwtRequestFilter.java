@@ -69,7 +69,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     }
 
     private boolean isNotFilter(String path) {
-        List<String> uri = new ArrayList<>(Arrays.asList("/csrf", "/authentication", "/swagger-resources", "/swagger-ui.html",
+        List<String> uri = new ArrayList<>(Arrays.asList("/csrf","/assets", "/authentication", "/swagger-resources", "/swagger-ui.html",
                 "/v2/api-docs", "/webjars", "/resources", "/index.html", "/test", "/socket.io"));
 
         for (String e : uri) {
