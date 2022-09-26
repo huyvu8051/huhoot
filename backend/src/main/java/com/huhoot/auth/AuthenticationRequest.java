@@ -18,11 +18,11 @@ public class AuthenticationRequest {
 	@NotNull
 	@NotBlank
 	@NotEmpty
-	@Length(min = 5, max = 15)
+	@Length(min = 4, max = 30)
 	private String username;
 	@NotNull
 	@NotBlank
 	@NotEmpty
-	@Length(min = 5, max = 15)
+	@Length(min = 4, max = 30)
 	private String password;
 }
