@@ -12,7 +12,7 @@
 <script setup lang="ts">
 
 import {reactive} from "vue";
-import axios from "axios";
+import Api from "@/services/Api";
 
 
 const state = reactive({
@@ -22,7 +22,11 @@ const state = reactive({
 
 
 const onSubmit = () => {
-    axios.get()
+  Api().post("/api/authentication", {username: state.username, password: state.password}).then(resp => {
+    console.log(resp.data);
+  }).catch(err => {
+    console.log(err.response)
+  })
 }
 
 

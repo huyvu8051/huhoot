@@ -1,10 +1,10 @@
 import {authorizationStore} from "@/stores/Authorization.js";
+import axios from "axios";
+
 export default () => {
 
 
-
     var instance = axios.create({
-        baseURL: process.env.BACKEND_URL,
         headers: {
             Authorization: `${authorizationStore.$id}`,
         }
@@ -24,14 +24,9 @@ export default () => {
 
         return response;
     }, err => {
-
-
-
         return Promise.reject(err);
 
     })
-
-
 
 
     return instance;

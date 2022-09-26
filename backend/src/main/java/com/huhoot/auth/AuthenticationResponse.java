@@ -1,18 +1,15 @@
 package com.huhoot.auth;
 
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Collection;
 
-@AllArgsConstructor
+@Builder
+@Getter
 public class AuthenticationResponse {
-	@Getter
 	private final String jwt;
-	@Getter
 	private final String username;
-	@Getter
 	private final Collection<? extends GrantedAuthority> authorities;
-
 }
