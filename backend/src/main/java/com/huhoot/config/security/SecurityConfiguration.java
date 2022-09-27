@@ -1,44 +1,47 @@
-package com.huhoot.auth;
+package com.huhoot.config.security;
 
+import com.huhoot.auth.MyUserDetailsService;
+import com.huhoot.config.mvc.SpaRedirectFilter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @EnableWebSecurity
-public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
-    private final MyUserDetailsService myUserDetailsService;
+@RequiredArgsConstructor
+public class SecurityConfiguration {
 
     private final JwtRequestFilter jwtRequestFilter;
 
+    private final SpaRedirectFilter spaRedirectFilter;
     private final RestAccessDeniedHandler accessDeniedHandler;
-
     private final RestAuthenticationEntryPoint authenticationEntryPoint;
 
-    public SecurityConfigurer(MyUserDetailsService myUserDetailsService, JwtRequestFilter jwtRequestFilter, RestAccessDeniedHandler accessDeniedHandler, RestAuthenticationEntryPoint authenticationEntryPoint) {
-        this.myUserDetailsService = myUserDetailsService;
-        this.jwtRequestFilter = jwtRequestFilter;
-        this.accessDeniedHandler = accessDeniedHandler;
-        this.authenticationEntryPoint = authenticationEntryPoint;
+    @Bean
+    public AuthenticationManager authManager(HttpSecurity http, PasswordEncoder passwordEncoder, MyUserDetailsService userDetailService)
+            throws Exception {
+        return http.getSharedObject(AuthenticationManagerBuilder.class)
+                .userDetailsService(userDetailService)
+                .passwordEncoder(passwordEncoder)
+                .and()
+                .build();
     }
 
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(myUserDetailsService);
-    }
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
 
-        http.cors().and().csrf().disable().authorizeRequests()
-                .antMatchers("/", "/csrf", "/api/authentication",
-                        "/v2/api-docs", "/webjars/**", "/resources/**", "/index.html**", "/test**", "/socket.io/**","/static/**","/assets/**", "/client.html**", "/client2.html**", "/uploads/**")
+        http.cors().and().csrf().disable()
+                .authorizeRequests()
+                .antMatchers("/", "/csrf", "/api/authentication", "/api/test**",
+                        "/v2/api-docs", "/webjars/**", "/resources/**", "/index.html**", "/test**", "/socket.io/**", "/static/**", "/assets/**", "/client.html**", "/client2.html**", "/uploads/**")
                 .permitAll()
                 .antMatchers("/admin/**").hasAuthority("ADMIN")
                 .antMatchers("/host/**").hasAnyAuthority("HOST", "ADMIN")
@@ -48,15 +51,16 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
                 .exceptionHandling().accessDeniedHandler(accessDeniedHandler)
                 .authenticationEntryPoint(authenticationEntryPoint)
                 .and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
+
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(spaRedirectFilter, JwtRequestFilter.class);
 
-    }
 
-    @Override
-    @Bean
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
+        return http.build();
+
     }
 
     @Bean

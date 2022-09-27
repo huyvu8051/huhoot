@@ -7,7 +7,7 @@ import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.annotation.OnConnect;
 import com.corundumstudio.socketio.annotation.OnDisconnect;
 import com.corundumstudio.socketio.annotation.OnEvent;
-import com.huhoot.auth.JwtUtil;
+import com.huhoot.config.security.JwtUtil;
 import com.huhoot.auth.MyUserDetailsService;
 import com.huhoot.exception.NoClientInBroadcastOperations;
 import com.huhoot.exception.StudentAddException;

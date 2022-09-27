@@ -3,7 +3,7 @@ package com.huhoot.organize;
 import com.corundumstudio.socketio.BroadcastOperations;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
-import com.huhoot.auth.JwtUtil;
+import com.huhoot.config.security.JwtUtil;
 import com.huhoot.converter.ListConverter;
 import com.huhoot.converter.StudentInChallengeConverter;
 import com.huhoot.encrypt.EncryptUtils;

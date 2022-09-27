@@ -1,10 +1,8 @@
-import {authorizationStore} from "@/stores/Authorization.js";
+import {authorizationStore} from "@/stores/authorization";
 import axios from "axios";
 
 export default () => {
-
-
-    var instance = axios.create({
+    let instance = axios.create({
         headers: {
             Authorization: `${authorizationStore.$id}`,
         }
@@ -20,14 +18,11 @@ export default () => {
     });
 
     instance.interceptors.response.use(response => {
-
-
         return response;
     }, err => {
         return Promise.reject(err);
 
     })
-
 
     return instance;
 }

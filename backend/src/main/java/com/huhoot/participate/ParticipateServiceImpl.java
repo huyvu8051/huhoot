@@ -2,7 +2,7 @@ package com.huhoot.participate;
 
 import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
-import com.huhoot.auth.JwtUtil;
+import com.huhoot.config.security.JwtUtil;
 import com.huhoot.encrypt.EncryptUtils;
 import com.huhoot.enums.ChallengeStatus;
 import com.huhoot.exception.ChallengeException;

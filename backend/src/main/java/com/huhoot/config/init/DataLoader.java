@@ -1,4 +1,4 @@
-package com.huhoot.config;
+package com.huhoot.config.init;
 
 import com.corundumstudio.socketio.SocketIOServer;
 import com.github.javafaker.Faker;

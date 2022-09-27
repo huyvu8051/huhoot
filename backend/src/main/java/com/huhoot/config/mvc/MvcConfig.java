@@ -1,4 +1,4 @@
-package com.huhoot.config;
+package com.huhoot.config.mvc;
 
 import com.huhoot.utils.FileUploadUtil;
 import lombok.AllArgsConstructor;

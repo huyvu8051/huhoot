@@ -1,4 +1,4 @@
-package com.huhoot.auth;
+package com.huhoot.config.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

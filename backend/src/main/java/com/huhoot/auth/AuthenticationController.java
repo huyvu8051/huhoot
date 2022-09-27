@@ -1,6 +1,7 @@
 package com.huhoot.auth;
 
-import lombok.AllArgsConstructor;
+import com.huhoot.config.security.JwtUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,7 +14,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("api")
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class AuthenticationController {
     private final AuthenticationManager authenticationManager;
 

@@ -1,7 +1,9 @@
-package com.huhoot.auth;
+package com.huhoot.config.security;
 
+import com.huhoot.auth.MyUserDetailsService;
+import com.huhoot.config.security.JwtUtil;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,20 +22,18 @@ import java.util.List;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class JwtRequestFilter extends OncePerRequestFilter {
-    @Autowired
-    private MyUserDetailsService myUserDetailsService;
 
-    @Autowired
-    private JwtUtil jwtUtil;
+    private final MyUserDetailsService myUserDetailsService;
 
-
+    private final JwtUtil jwtUtil;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-        log.warn("run over jwt filter");
+        log.warn("run over jwt filter " + request.getRequestURI());
 
         final String authorizationHeader = request.getHeader("Authorization");
 
@@ -69,7 +69,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     }
 
     private boolean isNotFilter(String path) {
-        List<String> uri = new ArrayList<>(Arrays.asList("/csrf","/assets", "/authentication", "/swagger-resources", "/swagger-ui.html",
+        List<String> uri = new ArrayList<>(Arrays.asList("/csrf", "/assets", "/authentication", "/swagger-resources", "/swagger-ui.html",
                 "/v2/api-docs", "/webjars", "/resources", "/index.html", "/test", "/socket.io"));
 
         for (String e : uri) {
