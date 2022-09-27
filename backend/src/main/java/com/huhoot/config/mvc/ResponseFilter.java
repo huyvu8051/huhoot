@@ -2,11 +2,16 @@ package com.huhoot.config.mvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.huhoot.config.CustomRestResponse;
+import org.apache.tomcat.util.json.JSONParser;
+import org.apache.tomcat.util.json.ParseException;
 import org.springframework.context.annotation.Configuration;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectInputStream;
 
 
 @Configuration
@@ -24,17 +29,29 @@ public class ResponseFilter implements Filter {
 
         chain.doFilter(request, responseWrapper);
 
-        String responseContent = new String(responseWrapper.getDataStream());
+        byte[] dataStream = responseWrapper.getDataStream();
 
-        CustomRestResponse fullResponse = CustomRestResponse.builder()
-                .data(responseContent)
-                .build();
+        String responseContent = new String(dataStream);
 
-        byte[] responseToSend = restResponseBytes(fullResponse);
+        JSONParser parser = new JSONParser(responseContent);
+        try {
+            Object json = parser.parse();
+            CustomRestResponse fullResponse = CustomRestResponse.builder()
+                    .status(((HttpServletResponse) response).getStatus())
 
-        response.getOutputStream().write(responseToSend);
+                    .data(json)
+                    .build();
+
+            byte[] responseToSend = restResponseBytes(fullResponse);
+
+            response.getOutputStream().write(responseToSend);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+
 
     }
+
 
     @Override
     public void destroy() {
