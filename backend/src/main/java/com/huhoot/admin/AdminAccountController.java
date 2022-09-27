@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
-@RequestMapping("admin")
+@RequestMapping("api/admin")
 @AllArgsConstructor
 public class AdminAccountController {
     private final HostAccountService hostAccountService;

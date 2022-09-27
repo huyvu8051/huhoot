@@ -13,7 +13,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("admin")
+@RequestMapping("api/admin")
 @AllArgsConstructor
 public class ManageHostController {
 

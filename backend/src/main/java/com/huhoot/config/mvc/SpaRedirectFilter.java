@@ -21,7 +21,7 @@ public class SpaRedirectFilter extends OncePerRequestFilter{
     private Pattern pattern = Pattern.compile(REGEX);
     @Override
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain chain) throws ServletException, IOException {
-        log.info("Request run over");
+        log.warn(req.getRequestURI());
         if (pattern.matcher(req.getRequestURI()).matches() && !req.getRequestURI().equals("/")) {
             // Delegate/Forward to `/` if `pattern` matches and it is not `/`
             // Required because of 'mode: history'usage in frontend routing, see README for further details
@@ -31,5 +31,9 @@ public class SpaRedirectFilter extends OncePerRequestFilter{
         } else {
             chain.doFilter(req, res);
         }
+
+        log.info(this.getClass().getName() + " " + req.getRequestURI());
+
+
     }
 }

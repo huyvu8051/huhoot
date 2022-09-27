@@ -1,25 +1,38 @@
 package com.huhoot.config.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.huhoot.config.CustomRestResponse;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
 
 @Component
+@Slf4j
 public class RestAccessDeniedHandler implements AccessDeniedHandler {
 
     @Override
-    public void handle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AccessDeniedException e) throws IOException {
+    public void handle(HttpServletRequest req, HttpServletResponse resp, AccessDeniedException e) throws IOException {
 
-        OutputStream out = httpServletResponse.getOutputStream();
+        log.warn(req.getRequestURI());
+
+        OutputStream out = resp.getOutputStream();
         ObjectMapper mapper = new ObjectMapper();
-        mapper.writeValue(out, "Access Denied "+ e.getMessage());
+        HttpStatus forbidden = HttpStatus.FORBIDDEN;
+
+        resp.setHeader("Content-Type", "application/json");
+
+        mapper.writeValue(out, CustomRestResponse.builder()
+                .status(forbidden.value())
+                .message(forbidden.getReasonPhrase() + ": " + e.getMessage())
+                .data("")
+                .build());
         out.flush();
     }
 }

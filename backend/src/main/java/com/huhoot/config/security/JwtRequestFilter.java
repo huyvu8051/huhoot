@@ -30,12 +30,12 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+    protected void doFilterInternal(HttpServletRequest req, HttpServletResponse resp, FilterChain filterChain)
             throws ServletException, IOException {
 
-        log.warn("run over jwt filter " + request.getRequestURI());
+        log.warn(req.getRequestURI());
 
-        final String authorizationHeader = request.getHeader("Authorization");
+        final String authorizationHeader = req.getHeader("Authorization");
 
         String username = null;
         String jwt = null;
@@ -52,14 +52,16 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                         userDetails, null, userDetails.getAuthorities());
 
                 usernamePasswordAuthenticationToken
-                        .setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                        .setDetails(new WebAuthenticationDetailsSource().buildDetails(req));
 
                 SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
 
 
             }
         }
-        filterChain.doFilter(request, response);
+        filterChain.doFilter(req, resp);
+
+
     }
 
     @Override
@@ -69,7 +71,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     }
 
     private boolean isNotFilter(String path) {
-        List<String> uri = new ArrayList<>(Arrays.asList("/csrf", "/assets", "/authentication", "/swagger-resources", "/swagger-ui.html",
+        List<String> uri = new ArrayList<>(Arrays.asList("/csrf", "/assets", "/api/authentication", "/swagger-resources", "/swagger-ui.html",
                 "/v2/api-docs", "/webjars", "/resources", "/index.html", "/test", "/socket.io"));
 
         for (String e : uri) {

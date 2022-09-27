@@ -2,6 +2,7 @@ package com.huhoot.auth;
 
 import com.huhoot.config.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,7 +24,7 @@ public class AuthenticationController {
     private final JwtUtil jwtUtil;
 
     @PostMapping("/authentication")
-    public AuthenticationResponse createAuthenticationToken(@RequestBody @Valid AuthenticationRequest request) {
+    public ResponseEntity<AuthenticationResponse> createAuthenticationToken(@RequestBody @Valid AuthenticationRequest request) {
 
         String formattedUsername = request.getUsername().trim().toLowerCase();
 
@@ -34,10 +35,10 @@ public class AuthenticationController {
 
         final String jwt = jwtUtil.generateToken(userDetails);
 
-        return AuthenticationResponse.builder()
+        return ResponseEntity.ok(AuthenticationResponse.builder()
                 .jwt(jwt)
                 .username(userDetails.getUsername())
                 .authorities(userDetails.getAuthorities())
-                .build();
+                .build());
     }
 }
