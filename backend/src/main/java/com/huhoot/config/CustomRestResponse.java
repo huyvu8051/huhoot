@@ -8,9 +8,8 @@ import java.io.Serializable;
 
 @Getter
 @Builder
-public class CustomRestResponse<T> implements Serializable {
+public class CustomRestResponse implements Serializable {
     private int status;
     private String message;
-    @Setter
-    private T data;
+    private Object data;
 }

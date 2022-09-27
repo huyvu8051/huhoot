@@ -27,37 +27,41 @@ public class ResponseFilter extends OncePerRequestFilter {
 
         byte[] dataStream = responseWrapper.getDataStream();
 
+        String responseContent = new String(dataStream);
+
+
         int status = response.getStatus();
 
         byte[] responseToSend;
 
+        CustomRestResponse.CustomRestResponseBuilder builder = CustomRestResponse.builder();
+
         if(HttpStatus.valueOf(status).isError()){
 
+            response.setStatus(HttpStatus.OK.value());
+            builder.data(null);
+            builder.message(responseContent);
 
         }else {
-
-            String responseContent = new String(dataStream);
-
             JSONParser parser = new JSONParser(responseContent);
             try {
                 Object json = parser.parse();
-                CustomRestResponse fullResponse = CustomRestResponse.builder()
-                        .status(response.getStatus())
-                        .data(json)
-                        .build();
 
-                responseToSend = restResponseBytes(fullResponse);
+                builder.data(json);
+                builder.message(HttpStatus.OK.getReasonPhrase());
 
-                response.getOutputStream().write(responseToSend);
             } catch (ParseException e) {
                 throw new RuntimeException(e);
             }
         }
 
 
+        responseToSend = restResponseBytes(builder.status(status).build());
+
+        response.getOutputStream().write(responseToSend);
 
 
-
+        response.setStatus(200);
     }
 
 
