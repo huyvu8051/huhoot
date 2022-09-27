@@ -5,57 +5,61 @@ import com.huhoot.config.CustomRestResponse;
 import org.apache.tomcat.util.json.JSONParser;
 import org.apache.tomcat.util.json.ParseException;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.filter.OncePerRequestFilter;
 
-import javax.servlet.*;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectInputStream;
 
 
 @Configuration
-public class ResponseFilter implements Filter {
+public class ResponseFilter extends OncePerRequestFilter {
+
 
     @Override
-    public void init(FilterConfig filterConfig) {
-    }
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        ResponseWrapper responseWrapper = new ResponseWrapper(response);
 
-    @Override
-    public void doFilter(ServletRequest request, ServletResponse response,
-                         FilterChain chain) throws IOException, ServletException {
-
-        ResponseWrapper responseWrapper = new ResponseWrapper((HttpServletResponse) response);
-
-        chain.doFilter(request, responseWrapper);
+        filterChain.doFilter(request, responseWrapper);
 
         byte[] dataStream = responseWrapper.getDataStream();
 
-        String responseContent = new String(dataStream);
+        int status = response.getStatus();
 
-        JSONParser parser = new JSONParser(responseContent);
-        try {
-            Object json = parser.parse();
-            CustomRestResponse fullResponse = CustomRestResponse.builder()
-                    .status(((HttpServletResponse) response).getStatus())
+        byte[] responseToSend;
 
-                    .data(json)
-                    .build();
+        if(HttpStatus.valueOf(status).isError()){
 
-            byte[] responseToSend = restResponseBytes(fullResponse);
 
-            response.getOutputStream().write(responseToSend);
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
+        }else {
+
+            String responseContent = new String(dataStream);
+
+            JSONParser parser = new JSONParser(responseContent);
+            try {
+                Object json = parser.parse();
+                CustomRestResponse fullResponse = CustomRestResponse.builder()
+                        .status(response.getStatus())
+                        .data(json)
+                        .build();
+
+                responseToSend = restResponseBytes(fullResponse);
+
+                response.getOutputStream().write(responseToSend);
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
+            }
         }
 
 
-    }
 
 
-    @Override
-    public void destroy() {
+
     }
+
 
     private byte[] restResponseBytes(CustomRestResponse response) throws IOException {
         String serialized = new ObjectMapper().writeValueAsString(response);

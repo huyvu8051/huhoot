@@ -18,7 +18,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({LockedException.class, BadCredentialsException.class})
     public ResponseEntity<String> handleAuthenticationException(Exception e) {
         log.debug("handleAuthenticationException" + e.getMessage());
-        return ResponseEntity.ok().body(e.getMessage());
+        return ResponseEntity.badRequest().body(e.getMessage());
     }
 
     @ExceptionHandler({NoSuchElementException.class})
