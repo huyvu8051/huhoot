@@ -1,7 +1,7 @@
 package com.huhoot.config.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.huhoot.config.mvc.CustomRestResponse;
+import com.huhoot.config.mvc.CustomBodyResponseDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
@@ -29,7 +29,7 @@ public class RestAccessDeniedHandler implements AccessDeniedHandler {
         resp.setHeader("Content-Type", "application/json");
 
 
-        mapper.writeValue(out, CustomRestResponse.builder()
+        mapper.writeValue(out, CustomBodyResponseDTO.builder()
                 .status(forbidden)
                 .message(forbidden.getReasonPhrase() + ": " + e.getMessage())
                 .build());

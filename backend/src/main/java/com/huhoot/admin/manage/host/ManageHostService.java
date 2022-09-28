@@ -3,6 +3,7 @@ package com.huhoot.admin.manage.host;
 import com.huhoot.exception.UsernameExistedException;
 import com.huhoot.vue.vdatatable.paging.PageResponse;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 
 import javax.validation.Valid;
 import java.util.List;

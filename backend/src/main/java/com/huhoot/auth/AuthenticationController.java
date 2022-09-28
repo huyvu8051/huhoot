@@ -24,7 +24,7 @@ public class AuthenticationController {
     private final JwtUtil jwtUtil;
 
     @PostMapping("/authentication")
-    public ResponseEntity<AuthenticationResponse> createAuthenticationToken(@RequestBody @Valid AuthenticationRequest request) {
+    public AuthenticationResponse createAuthenticationToken(@RequestBody @Valid AuthenticationRequest request) {
 
         String formattedUsername = request.getUsername().trim().toLowerCase();
 
@@ -35,10 +35,10 @@ public class AuthenticationController {
 
         final String jwt = jwtUtil.generateToken(userDetails);
 
-        return ResponseEntity.ok(AuthenticationResponse.builder()
+        return AuthenticationResponse.builder()
                 .jwt(jwt)
                 .username(userDetails.getUsername())
                 .authorities(userDetails.getAuthorities())
-                .build());
+                .build();
     }
 }

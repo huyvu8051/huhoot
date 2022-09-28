@@ -21,7 +21,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 public class PreHandleBodySuccessResponse implements ResponseBodyAdvice<Object> {
 
     /**
-     * If the returned Object from RestController is Implementation of com.huhoot.config.mvc.ICustomResponse -> do wrap.
+     * If the returned Object from RestController is Annotated with com.huhoot.config.mvc.CustomBodyResponse -> do wrap.
      *
      * @param returnType
      * @param converterType
@@ -30,7 +30,10 @@ public class PreHandleBodySuccessResponse implements ResponseBodyAdvice<Object> 
     @Override
     public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {
         Class<?> methodReturnType = returnType.getMethod().getReturnType();
-        return ICustomBodyResponse.class.isAssignableFrom(methodReturnType);
+
+        CustomBodyResponse annotation = methodReturnType.getAnnotation(CustomBodyResponse.class);
+
+        return annotation != null;
     }
 
     /**
@@ -47,7 +50,7 @@ public class PreHandleBodySuccessResponse implements ResponseBodyAdvice<Object> 
     @Override
     public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType selectedContentType, Class<? extends HttpMessageConverter<?>> selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
         response.setStatusCode(HttpStatus.OK);
-        return CustomRestResponse.builder()
+        return CustomBodyResponseDTO.builder()
                 .status(HttpStatus.OK)
                 .data(body)
                 .build();

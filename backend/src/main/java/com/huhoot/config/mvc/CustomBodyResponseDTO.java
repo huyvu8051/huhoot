@@ -13,7 +13,7 @@ import java.io.Serializable;
  * @CreatedDate 28/9/2022
  */
 @Builder
-public class CustomRestResponse implements Serializable {
+public class CustomBodyResponseDTO implements Serializable {
     private HttpStatus status;
     private String message;
 

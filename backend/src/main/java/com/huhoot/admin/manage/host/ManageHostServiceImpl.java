@@ -8,6 +8,7 @@ import com.huhoot.repository.AdminRepository;
 import com.huhoot.repository.ManageHostRepository;
 import com.huhoot.vue.vdatatable.paging.PageResponse;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,7 +26,7 @@ import java.util.Optional;
 import java.util.Set;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class ManageHostServiceImpl implements ManageHostService {
 
 
