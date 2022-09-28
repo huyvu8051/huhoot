@@ -1,7 +1,7 @@
 package com.huhoot.config.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.huhoot.config.CustomRestResponse;
+import com.huhoot.config.mvc.CustomRestResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
@@ -22,15 +22,16 @@ public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
         log.info(this.getClass().getName() + ": " + req.getRequestURI());
 
         resp.setHeader("Content-Type", "application/json");
+
+
         OutputStream out = resp.getOutputStream();
         ObjectMapper mapper = new ObjectMapper();
 
         HttpStatus unauthorized = HttpStatus.UNAUTHORIZED;
 
         mapper.writeValue(out, CustomRestResponse.builder()
-                .status(unauthorized.value())
-                .message(unauthorized.getReasonPhrase() + ": " + e.getMessage())
-                .data("")
+                        .status(unauthorized)
+                        .message(unauthorized.getReasonPhrase() + ": " + e.getMessage())
                 .build());
         out.flush();
     }

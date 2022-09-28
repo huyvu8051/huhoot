@@ -1,12 +1,13 @@
 package com.huhoot.vue.vdatatable.paging;
 
+import com.huhoot.config.mvc.ICustomBodyResponse;
 import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Data
-public class PageResponse<T> {
+public class PageResponse<T> implements ICustomBodyResponse {
     private List<T> list;
     private long totalElements;
 

@@ -1,5 +1,6 @@
 package com.huhoot.admin.manage.host;
 
+import com.huhoot.exception.CustomException;
 import com.huhoot.exception.UsernameExistedException;
 import com.huhoot.vue.vdatatable.paging.PageResponse;
 import com.huhoot.vue.vdatatable.paging.VDataTablePagingConverter;
@@ -23,11 +24,19 @@ public class ManageHostController {
 
 
     @PostMapping("/host/findAll")
-    public ResponseEntity<PageResponse<HostResponse>> getAll(@RequestBody VDataTablePagingRequest pagingRequest) {
+    public PageResponse<HostResponse> getAll(@RequestBody VDataTablePagingRequest pagingRequest) {
 
         Pageable pageable1 = vDataTablePagingConverter.toPageable(pagingRequest);
 
-        return ResponseEntity.ok(manageHostService.findAllHostAccount(pageable1));
+        return manageHostService.findAllHostAccount(pageable1);
+
+    }
+
+    @PostMapping("/host/findAll2")
+    public String getAll2(@RequestBody VDataTablePagingRequest pagingRequest) throws CustomException {
+
+       // return "Test String resp";
+        throw new CustomException("Custom ex throw test ");
 
     }
 
@@ -43,7 +52,6 @@ public class ManageHostController {
 
         manageHostService.updateHostAccount(request);
     }
-
 
 
 }
