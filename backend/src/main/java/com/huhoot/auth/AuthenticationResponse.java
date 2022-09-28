@@ -1,11 +1,13 @@
 package com.huhoot.auth;
 
+import com.huhoot.config.mvc.CustomBodyResponse;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Collection;
 
+@CustomBodyResponse
 @Builder
 @Getter
 public class AuthenticationResponse {

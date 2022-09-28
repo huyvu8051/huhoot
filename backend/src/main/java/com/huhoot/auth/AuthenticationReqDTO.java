@@ -14,7 +14,7 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class AuthenticationRequest {
+public class AuthenticationReqDTO {
 	@NotNull
 	@NotBlank
 	@NotEmpty
