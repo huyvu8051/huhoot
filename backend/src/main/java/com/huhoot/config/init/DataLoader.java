@@ -44,7 +44,7 @@ public class DataLoader implements ApplicationRunner {
     public void run(ApplicationArguments args) {
 
         try {
-            //server.start();
+            server.start();
             log.info("Socket launch successful!");
         } catch (Exception e) {
             log.error("Socket launch failure!");

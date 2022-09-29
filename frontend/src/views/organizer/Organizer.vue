@@ -1,9 +1,11 @@
 <template>
   <router-view></router-view>
+  <button @click="sentSt">click</button>
 </template>
 
-<script setup lang="ts">
-import {io} from "socket.io-client";
+<script setup>
+
+import io from "socket.io-client"
 
 const socket = io("http://localhost:8082")
 socket.on("connected", (message) => {
@@ -13,6 +15,11 @@ socket.on("connected", (message) => {
 socket.on("abc", (msg) => {
   console.log(msg);
 })
+
+function sentSt(){
+  socket.emit("messageEvent")
+}
+
 </script>
 
 <style scoped>
