@@ -44,7 +44,7 @@ public class DataLoader implements ApplicationRunner {
     public void run(ApplicationArguments args) {
 
         try {
-            server.start();
+            //server.start();
             log.info("Socket launch successful!");
         } catch (Exception e) {
             log.error("Socket launch failure!");
@@ -100,7 +100,7 @@ public class DataLoader implements ApplicationRunner {
                 Admin host = adminRepository.save(admin1);
 
 
-                for (int j = 0; j < 1; j++) {
+                for (int j = 0; j < 3; j++) {
                     Challenge challenge = new Challenge();
 
 

@@ -1,20 +1,24 @@
 import Api from "@/services/Api";
 import {reactive} from "vue";
+import type {AxiosResponse} from "axios";
+import {useUserInformationStore} from "@/stores/UserInfomation";
+import router from "@/router";
 
+const {saveUserInfo} = useUserInformationStore();
 
 interface AuthenticationReqDTO {
     username: string,
     password: string
-};
+}
 
 interface AuthenticationRespDTO {
     jwt: string,
     username: string,
-    authorities: string[]
+    authorities: string[],
+    fullName: string
 }
 
-function authenticate(onSuccess: Function = (resp:any) => {
-}, onError: Function = (err:any) => {
+function authenticate(onError: Function = (err: any) => {
 }) {
 
     const authenticationReqDTO = reactive<AuthenticationReqDTO>({
@@ -22,9 +26,14 @@ function authenticate(onSuccess: Function = (resp:any) => {
         password: ""
     })
 
-    const submit = () => Api().post<AuthenticationReqDTO>("/authentication", authenticationReqDTO)
-        .then(resp => onSuccess(resp))
-        .catch(err => onError(err))
+    function submit() {
+        Api().post("/authentication", authenticationReqDTO)
+            .then((resp: AxiosResponse<AuthenticationRespDTO>) => {
+                router.push({name: "customer.home"}).then();
+                saveUserInfo(resp.data.username, resp.data.jwt, resp.data.authorities, resp.data.fullName);
+            })
+            .catch(err => onError(err))
+    }
 
     return {
         authenticationReqDTO,

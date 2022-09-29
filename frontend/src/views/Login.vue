@@ -14,7 +14,7 @@ import {authenticate} from "@/services/Authentication";
 
 const {submit, authenticationReqDTO} = authenticate((resp: any) => {
   console.log("dispatched: ", resp);
-}, console.log);
+});
 
 
 </script>

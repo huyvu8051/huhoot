@@ -1,5 +1,10 @@
-import {authorizationStore} from "@/stores/authorization";
+import {useUserInformationStore} from "@/stores/UserInfomation";
 import axios from "axios";
+import {storeToRefs} from "pinia";
+
+const {jwt} = useUserInformationStore();
+
+console.log(jwt)
 
 interface CustomBodyResponseDTO {
     status: number,
@@ -10,12 +15,12 @@ interface CustomBodyResponseDTO {
 let instance = axios.create({
     baseURL: "/api",
     headers: {
-        Authorization: `${authorizationStore.$id}`,
+        Authorization: "Bearer " + `${jwt}`,
     }
 });
 
 instance.interceptors.request.use(req => {
-    console.log(req);
+   // console.log(req);
     return req;
 }, error => Promise.reject(error));
 
@@ -26,7 +31,7 @@ instance.interceptors.response.use(resp => {
     switch (customBodyRespDTO.status) {
         case 200:
         case 201:
-            return customBodyRespDTO.data;
+            return customBodyRespDTO;
             break;
         case 400:
         case 401:
@@ -47,3 +52,6 @@ export default () => {
     return instance;
 }
 
+export type {
+    CustomBodyResponseDTO
+}

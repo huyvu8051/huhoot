@@ -40,11 +40,11 @@ public class SecurityConfiguration {
 
         http.cors().and().csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/", "/csrf", "/api/authentication", "/api/test/**",
+                .antMatchers("/", "/csrf", "/api/authentication", "/api/test/**","/h2-console/**",
                         "/v2/api-docs", "/webjars/**", "/resources/**", "/socket.io/**", "/static/**", "/assets/**", "/client.html**", "/client2.html**", "/uploads/**")
                 .permitAll()
                 .antMatchers("/api/admin/**").hasAuthority("ADMIN")
-                .antMatchers("/api/host/**").hasAnyAuthority("HOST", "ADMIN")
+                .antMatchers("/api/organizer/**").hasAnyAuthority("HOST", "ADMIN")
                 .antMatchers("/api/student/**").hasAuthority("STUDENT")
                 .anyRequest().authenticated()
                 .and()

@@ -50,7 +50,7 @@ public class MessageEventHandler {
 
     @OnDisconnect
     public void onDisconnect(SocketIOClient client) {
-        Integer challengeId = client.get("challengeId");
+      /*  Integer challengeId = client.get("challengeId");
 
         Challenge challenge = challengeRepository.findOneById(challengeId).orElseThrow(() -> new NullPointerException("Challenge not found"));
 
@@ -64,13 +64,16 @@ public class MessageEventHandler {
         }
 
         client.disconnect();
+
+
+       */
         log.info("a client was disconnected");
 
     }
 
     @OnEvent("messageEvent")
     public void onEvent(SocketIOClient client, AckRequest request, String data) {
-
+        client.sendEvent("abc", "chung ta cua hien tai");
     }
 
     @OnEvent("registerHostSocket")

@@ -14,7 +14,7 @@ import java.util.List;
 @EntityListeners(AuditingEntityListener.class)
 @Data
 @AllArgsConstructor
-@Where(clause = "is_non_deleted=1")
+@Where(clause = "is_non_deleted=true")
 public class Challenge extends Auditable {
     @Id
     @GeneratedValue

@@ -17,11 +17,12 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.List;
 
 @Slf4j
 @RestController
 @AllArgsConstructor
-@RequestMapping("host")
+@RequestMapping("api/organizer")
 public class ManageChallengeController {
     private final ManageChallengeService manageChallengeService;
 
@@ -30,14 +31,18 @@ public class ManageChallengeController {
     private final VDataTablePagingConverter vDataTablePagingConverter;
 
 
-    @PostMapping("/challenge/findAll")
-    public ResponseEntity<PageResponse<ChallengeResponse>> findAll(@RequestBody VDataTablePagingRequest request) {
+
+
+
+    @GetMapping("/challenge")
+    public PageResponse<ChallengeResponse> findAll(VDataTablePagingRequest request) {
+
         Admin userDetails = (Admin) SecurityContextHolder.getContext().getAuthentication()
                 .getPrincipal();
 
         Pageable pageable = vDataTablePagingConverter.toPageable(request);
 
-        return ResponseEntity.ok(manageChallengeService.findAllOwnChallenge(userDetails.getId(), pageable));
+        return manageChallengeService.findAllOwnChallenge(userDetails.getId(), pageable);
     }
 
 

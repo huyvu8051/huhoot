@@ -8,20 +8,15 @@ export interface UserInfo {
 }
 
 
-export const authorizationStore = defineStore('authorizationStore', {
-    state: () => {
-
-        let state: UserInfo = {
+export const useUserInformationStore = defineStore('userInformationStore', {
+    state: () => (
+        {
             username: "",
             jwt: "",
-            roles: [],
+            roles: [""],
             fullName: ""
         }
-
-        return state;
-    },
-    // could also be defined as
-    // state: () => ({ count: 0 })
+    ),
     actions: {
         saveUserInfo(username: string, jwt: string, roles: string[], fullName: string) {
             this.username = username;
@@ -30,4 +25,7 @@ export const authorizationStore = defineStore('authorizationStore', {
             this.fullName = fullName;
         }
     },
+    persist: {
+        enabled: true
+    }
 })
