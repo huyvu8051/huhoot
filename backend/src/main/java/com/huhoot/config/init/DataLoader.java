@@ -35,21 +35,9 @@ public class DataLoader implements ApplicationRunner {
     private final AnswerRepository answerRepository;
     private final EncryptUtils encryptUtils;
 
-
-
-    @Autowired
-    private SocketIOServer server;
-
-
     public void run(ApplicationArguments args) {
 
-        try {
-            server.start();
-            log.info("Socket launch successful!");
-        } catch (Exception e) {
-            log.error("Socket launch failure!");
-            log.error(e.getMessage());
-        }
+
 
         Random random = new Random();
 

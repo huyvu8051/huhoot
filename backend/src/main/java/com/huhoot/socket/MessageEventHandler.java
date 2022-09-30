@@ -1,67 +1,47 @@
 package com.huhoot.socket;
 
-
 import com.corundumstudio.socketio.AckRequest;
 import com.corundumstudio.socketio.SocketIOClient;
+import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.annotation.OnConnect;
 import com.corundumstudio.socketio.annotation.OnEvent;
 import com.huhoot.config.security.JwtUtil;
+import com.huhoot.exception.UsernameExistedException;
 import com.huhoot.model.Admin;
 import com.huhoot.participate.ParticipateService;
 import com.huhoot.repository.AdminRepository;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class MessageEventHandler {
     private final AdminRepository adminRepository;
-    private final JwtUtil jwtUtil;
+
+
+    private final SocketIOServer socketIOServer;
 
     @OnConnect
     public void onConnect(SocketIOClient client) throws NullPointerException {
+        String jwt = client.getHandshakeData().getSingleUrlParam("challengeId");
         client.sendEvent("connected", "connect success");
-        log.info("a client was connected");
+
+        log.info("a client was connected, challenge id: " + jwt);
+      //  client.getHandshakeData().getHttpHeaders().forEach(System.out::println);
+
     }
 
 
     @OnEvent("messageEvent")
-    public void onEvent(SocketIOClient client, AckRequest request, String data) {
+    public void onEvent(SocketIOClient client, AckRequest request, String data) throws UsernameExistedException {
         client.sendEvent("abc", "chung ta cua hien tai");
-    }
-
-    @OnEvent("registerHostSocket")
-    public void registerHostSocket(SocketIOClient client, SocketAuthorizationRequest request) {
-        try {
-            String token = request.getToken().substring(7);
-            String username = jwtUtil.extractUsername(token);
-            Admin admin = adminRepository.findOneByUsername(username).orElseThrow(() -> new NullPointerException("Admin not found"));
-
-            if (!jwtUtil.validateToken(token, admin)) {
-                throw new Exception("Bad token");
-            }
-
-
-            client.joinRoom(String.valueOf(request.getChallengeId()));
-
-            client.sendEvent("registerSuccess", HostRegisterSuccess.builder()
-                    .totalStudentInChallenge(0)
-                    .build());
-
-
-            admin.setSocketId(client.getSessionId());
-            adminRepository.save(admin);
-
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            client.sendEvent("joinError", "joinError");
-            client.disconnect();
-        }
+        throw new UsernameExistedException(":v");
     }
 
     private final ParticipateService participateService;
+
 
     @OnEvent("clientConnectRequest")
     public void clientConnectRequest(SocketIOClient client, SocketAuthorizationRequest request) {

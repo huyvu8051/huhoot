@@ -1,6 +1,6 @@
 <template>
   <router-view></router-view>
-  <button>click</button>
+  <button @click="click">click</button>
 </template>
 
 <script>
@@ -12,12 +12,25 @@ import {useCustomerAuthInfoStore} from "@/stores/CustomerAuthInfo";
 export default {
   setup() {
 
+    const store = useCustomerAuthInfoStore();
+
     const route = useRoute()
 
-    console.log(route.params.id,useCustomerAuthInfoStore().jwt)
+   // console.log(route.params.id, useCustomerAuthInfoStore().jwt)
 
 
-    const socket = io("http://localhost:8082")
+    const socket = io("http://localhost:8082", {
+      query: {
+        challengeId: route.params.id
+      },
+      transportOptions: {
+        polling: {
+          extraHeaders: {
+            'Authorization': 'Bearer ' + store.jwt
+          }
+        }
+      }
+    })
     socket
         .on("connected", (e) => {
           // console.log("connected");
@@ -30,8 +43,22 @@ export default {
       console.log("regist success")
     });
 
+    socket.on("abc", (data) => {
+      console.log("Socket:", data)
+    })
+
+
+    function click() {
+      socket.emit("messageEvent", "Chung ta cua hien tai")
+    }
+
+    return {
+      click
+    }
+
   }
 }
+
 </script>
 
 <style scoped>
