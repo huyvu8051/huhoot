@@ -8,6 +8,7 @@
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
     <description>Huhoot Spring Boot and Vue.js</description>
+    <inceptionYear>2021</inceptionYear>
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
@@ -15,6 +16,26 @@
         <relativePath/>
         <!-- lookup parent from repository -->
     </parent>
+    <licenses>
+        <license>
+            <name>Apache v2</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+            <distribution>manual</distribution>
+        </license>
+    </licenses>
+    <developers>
+        <developer>
+            <id>huyvu8051</id>
+            <email>huyvu8051@gmail.com</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+            <name>Vu Van Huy</name>
+            <url>https://github.com/huyvu8051/huhoot</url>
+            <timezone>+7</timezone>
+        </developer>
+    </developers>
+
     <modules>
         <module>frontend</module>
         <module>backend</module>

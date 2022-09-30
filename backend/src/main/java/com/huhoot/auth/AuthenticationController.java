@@ -23,7 +23,7 @@ public class AuthenticationController {
     private final JwtUtil jwtUtil;
 
     @PostMapping("/authentication")
-    public AuthenticationResponse createAuthenticationToken(@RequestBody @Valid AuthenticationReqDTO request) {
+    public AuthenticationResp createAuthenticationToken(@RequestBody @Valid AuthenticationReq request) {
 
         String formattedUsername = request.getUsername().trim().toLowerCase();
 
@@ -34,7 +34,7 @@ public class AuthenticationController {
 
         final String jwt = jwtUtil.generateToken(userDetails);
 
-        return AuthenticationResponse.builder()
+        return AuthenticationResp.builder()
                 .jwt(jwt)
                 .username(userDetails.getUsername())
                 .authorities(userDetails.getAuthorities())

@@ -1,25 +1,37 @@
 <template>
   <router-view></router-view>
-  <button @click="sentSt">click</button>
+  <button>click</button>
 </template>
 
-<script setup>
-
+<script>
 import io from "socket.io-client"
+import {useRoute} from "vue-router"
 
-const socket = io("http://localhost:8082")
-socket.on("connected", (message) => {
-  socket.send("messageEvent")
-})
+import {useCustomerAuthInfoStore} from "@/stores/CustomerAuthInfo";
 
-socket.on("abc", (msg) => {
-  console.log(msg);
-})
+export default {
+  setup() {
 
-function sentSt(){
-  socket.emit("messageEvent")
+    const route = useRoute()
+
+    console.log(route.params.id,useCustomerAuthInfoStore().jwt)
+
+
+    const socket = io("http://localhost:8082")
+    socket
+        .on("connected", (e) => {
+          // console.log("connected");
+        })
+        .emit("registerHostSocket", {
+          challengeId: route.params.id,
+          token: "Bearer " + useCustomerAuthInfoStore().jwt,
+        });
+    socket.on("registerSuccess", (data) => {
+      console.log("regist success")
+    });
+
+  }
 }
-
 </script>
 
 <style scoped>

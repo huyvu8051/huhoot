@@ -1,9 +1,11 @@
 <template>
-  <h1>Lobby</h1>
+
 </template>
 
-<script setup lang="ts">
-
+<script>
+export default {
+  name: "Lobby"
+}
 </script>
 
 <style scoped>

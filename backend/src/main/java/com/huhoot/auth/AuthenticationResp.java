@@ -10,7 +10,7 @@ import java.util.Collection;
 @CustomBodyResponse
 @Builder
 @Getter
-public class AuthenticationResponse {
+public class AuthenticationResp {
 	private final String jwt;
 	private final String username;
 	private final Collection<? extends GrantedAuthority> authorities;
