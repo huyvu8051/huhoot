@@ -7,9 +7,7 @@ import com.corundumstudio.socketio.annotation.OnConnect;
 import com.corundumstudio.socketio.annotation.OnEvent;
 import com.huhoot.config.security.JwtUtil;
 import com.huhoot.exception.UsernameExistedException;
-import com.huhoot.model.Admin;
-import com.huhoot.participate.ParticipateService;
-import com.huhoot.repository.AdminRepository;
+import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -18,19 +16,27 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @RequiredArgsConstructor
 public class MessageEventHandler {
-    private final AdminRepository adminRepository;
-
-
     private final SocketIOServer socketIOServer;
+    private final JwtUtil jwtUtil;
 
     @OnConnect
     public void onConnect(SocketIOClient client) throws NullPointerException {
-        String jwt = client.getHandshakeData().getSingleUrlParam("challengeId");
+        String challengeId = client.getHandshakeData().getSingleUrlParam("challengeId");
+
+        client.joinRoom(challengeId);
+
+        String authorization = client.getHandshakeData().getHttpHeaders().get("Authorization");
+        String token = authorization.substring(7);
+        Claims claims = jwtUtil.extractAllClaims(token);
+
+        Integer userId = claims.get("userId", Integer.class);
+        String role = claims.get("role", String.class);
+
+        client.set("userId", userId);
+        client.set("role", role);
+
         client.sendEvent("connected", "connect success");
-
-        log.info("a client was connected, challenge id: " + jwt);
-      //  client.getHandshakeData().getHttpHeaders().forEach(System.out::println);
-
+        log.info("a client was connected, challenge id: " + challengeId);
     }
 
 
@@ -38,15 +44,6 @@ public class MessageEventHandler {
     public void onEvent(SocketIOClient client, AckRequest request, String data) throws UsernameExistedException {
         client.sendEvent("abc", "chung ta cua hien tai");
         throw new UsernameExistedException(":v");
-    }
-
-    private final ParticipateService participateService;
-
-
-    @OnEvent("clientConnectRequest")
-    public void clientConnectRequest(SocketIOClient client, SocketAuthorizationRequest request) {
-
-
     }
 
 

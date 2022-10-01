@@ -1,6 +1,6 @@
 import {defineStore} from 'pinia'
 
-export const useCustomerAuthInfoStore = defineStore('customerAuthInfo', {
+export const useAuthStore = defineStore('auth', {
     state: () => ({
         username: "",
         jwt: "",
@@ -8,7 +8,7 @@ export const useCustomerAuthInfoStore = defineStore('customerAuthInfo', {
         fullName: ""
     }),
     actions: {
-        updateAuthInfo(authResp) {
+        update(authResp) {
             let state = this;
             state = Object.assign(state, authResp)
         }

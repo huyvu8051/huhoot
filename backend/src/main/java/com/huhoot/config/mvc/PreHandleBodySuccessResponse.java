@@ -31,9 +31,11 @@ public class PreHandleBodySuccessResponse implements ResponseBodyAdvice<Object> 
     public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {
         Class<?> methodReturnType = returnType.getMethod().getReturnType();
 
+        if(methodReturnType.equals(Void.TYPE)) return true;
+
         CustomBodyResponse annotation = methodReturnType.getAnnotation(CustomBodyResponse.class);
 
-        return annotation != null;
+        return  annotation != null;
     }
 
     /**

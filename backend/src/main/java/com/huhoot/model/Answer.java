@@ -13,7 +13,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @EntityListeners({ AuditingEntityListener.class })
-@Where(clause="is_non_deleted=1")
+@Where(clause="is_non_deleted=true")
 public class Answer extends Auditable{
 
 	@Id

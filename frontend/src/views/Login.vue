@@ -12,10 +12,10 @@
 <script setup>
 import Api from "@/services/Api";
 import {reactive} from "vue";
-import {useCustomerAuthInfoStore} from "@/stores/CustomerAuthInfo";
+import {useAuthStore} from "@/stores/Auth";
 import router from "@/router";
 
-const {updateAuthInfo} = useCustomerAuthInfoStore();
+const authStore = useAuthStore();
 
 
 const authReq = reactive({
@@ -24,9 +24,9 @@ const authReq = reactive({
 })
 
 function submit() {
-  Api().post("/authentication", authReq)
+  Api().post("/api/authentication", authReq)
       .then(async ({data}) => {
-        await updateAuthInfo(data)
+        await authStore.update(data)
         await router.push({name: "customer.home"})
       })
       .catch()

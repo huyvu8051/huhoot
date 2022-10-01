@@ -1,9 +1,7 @@
 package com.huhoot.config.init;
 
-import com.corundumstudio.socketio.SocketIOServer;
 import com.github.javafaker.Faker;
 import com.huhoot.encrypt.EncryptUtils;
-import com.huhoot.repository.StudentRepository;
 import com.huhoot.enums.AnswerOption;
 import com.huhoot.enums.ChallengeStatus;
 import com.huhoot.enums.Points;
@@ -12,7 +10,6 @@ import com.huhoot.model.*;
 import com.huhoot.repository.*;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -124,6 +121,9 @@ public class DataLoader implements ApplicationRunner {
                         studentChallenge.setModifiedDate(date);
                         studentChallenge.setModifiedBy("Nobody");
                         studentChallenge.setNonDeleted(true);
+
+                        // test, must change to false
+                        studentChallenge.setLogin(true);
 
                         studentChallengeRepository.save(studentChallenge);
 

@@ -1,10 +1,9 @@
-import {useCustomerAuthInfoStore} from "@/stores/CustomerAuthInfo";
+import {useAuthStore} from "@/stores/Auth";
 import axios from "axios";
 
-const {jwt} = useCustomerAuthInfoStore();
+const {jwt} = useAuthStore();
 
 let instance = axios.create({
-    baseURL: "/api",
     headers: {
         Authorization: "Bearer " + `${jwt}`,
     }
@@ -32,7 +31,7 @@ instance.interceptors.response.use(resp => {
             break;
 
         default :
-            console.log(resp.data);
+            console.warn("resp without wrapped body: ", resp.data);
             break;
     }
 }, err => Promise.reject(err))

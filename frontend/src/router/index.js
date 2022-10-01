@@ -25,27 +25,32 @@ const router = createRouter({
             children: [
 
                 {
-                    path: ":id/lobby",
+                    path: ":challengeId/lobby",
                     name: "organizer.lobby",
                     component: () => import("@/views/organizer/Lobby.vue")
                 },
                 {
-                    path: ":id/start",
+                    path: ":challengeId/start",
                     name: "organizer.start",
                     component: () => import("@/views/organizer/Start.vue")
                 },
                 {
-                    path: "preview",
+                    path: ":challengeId/request",
+                    name: "organizer.request",
+                    component: () => import("@/views/organizer/Request.vue")
+                },
+                {
+                    path: ":challengeId/preview",
                     name: "organizer.preview",
                     component: () => import("@/views/organizer/Preview.vue")
                 },
                 {
-                    path: "answer",
-                    name: "organizer.answer",
-                    component: () => import("@/views/organizer/Answer.vue")
+                    path: ":challengeId/ask",
+                    name: "organizer.ask",
+                    component: () => import("@/views/organizer/Ask.vue")
                 },
                 {
-                    path: "result",
+                    path: ":challengeId/result",
                     name: "organizer.result",
                     component: () => import("@/views/organizer/Result.vue")
                 }

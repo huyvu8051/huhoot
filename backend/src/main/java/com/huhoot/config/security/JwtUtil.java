@@ -21,11 +21,11 @@ public class JwtUtil {
     @Value("${huhoot.secret-key}")
     private String SECRET_KEY = null;
 
-    private Claims extractAllClaims(String token) {
+    public Claims extractAllClaims(String token) {
         return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
     }
 
-    private boolean isTokenExpired(String token) {
+    public boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
 
@@ -41,6 +41,14 @@ public class JwtUtil {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
+
+    public String extractClaim(String token, String claimName){
+
+        final Claims claims = extractAllClaims(token);
+
+        return claims.get(claimName, String.class);
+    }
+
 
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();

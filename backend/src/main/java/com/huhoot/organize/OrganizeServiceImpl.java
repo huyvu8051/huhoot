@@ -5,14 +5,13 @@ import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.huhoot.config.security.JwtUtil;
 import com.huhoot.converter.ListConverter;
-import com.huhoot.converter.StudentInChallengeConverter;
+import com.huhoot.dto.ChallengeResponse;
 import com.huhoot.encrypt.EncryptUtils;
 import com.huhoot.enums.AnswerOption;
 import com.huhoot.enums.ChallengeStatus;
 import com.huhoot.exception.ChallengeException;
 import com.huhoot.exception.NoClientInBroadcastOperations;
 import com.huhoot.host.manage.challenge.ChallengeMapper;
-import com.huhoot.dto.ChallengeResponse;
 import com.huhoot.host.manage.studentInChallenge.StudentInChallengeResponse;
 import com.huhoot.model.*;
 import com.huhoot.repository.*;
@@ -107,7 +106,39 @@ public class OrganizeServiceImpl implements OrganizeService {
         int totalStudentCorrectAns = studentAnswerRepository.getTotalStudentAnswerByQuestIdAndIsCorrect(question.getId(), true).orElse(0);
         int totalStudentWrongAns = studentAnswerRepository.getTotalStudentAnswerByQuestIdAndIsCorrect(question.getId(), false).orElse(0);
 
-        socketIOServer.getRoomOperations(challenge.getId() + "").sendEvent("showCorrectAnswer", CorrectAnswerResponse.builder().answers(answerResult).timeout(question.getTimeout()).encryptKey(jsSideKey).totalStudent(totalStudent).totalStudentCorrect(totalStudentCorrectAns).totalStudentWrong(totalStudentWrongAns).build());
+        socketIOServer.getRoomOperations(challenge.getId() + "").sendEvent("showCorrectAnswer", CorrectAnswerResponse.builder().corrects(answerResult).timeout(question.getTimeout()).encryptKey(jsSideKey).totalStudent(totalStudent).totalStudentCorrect(totalStudentCorrectAns).totalStudentWrong(totalStudentWrongAns).build());
+    }
+
+    @Override
+    public PageResponse showCorrectAnswer(int challengeId) throws NullPointerException {
+        PublishedExam currentPublishedExam = getCurrentPublishedExam(challengeId);
+        long now = System.currentTimeMillis();
+
+
+
+
+
+        Question question = questRepo.findOneById(currentPublishedExam.getQuestion().getId()).orElseThrow(()-> new NullPointerException("No question"));
+
+        List<Integer> answerResult = answerRepository.findAllCorrectAnswerIds(currentPublishedExam.getQuestion().getId());
+
+
+        // gen key for js size
+        byte[] byteKey = question.getEncryptKey();
+        String jsSideKey = encryptUtils.genKeyForJsSide(byteKey);
+
+
+        int totalStudent = studentInChallengeRepository.getTotalStudentInChallenge(challengeId);
+        int totalStudentCorrectAns = studentAnswerRepository.getTotalStudentAnswerByQuestIdAndIsCorrect(question.getId(), true).orElse(0);
+        int totalStudentWrongAns = studentAnswerRepository.getTotalStudentAnswerByQuestIdAndIsCorrect(question.getId(), false).orElse(0);
+
+        socketIOServer.getRoomOperations(challengeId + "").sendEvent("showCorrectAnswer", CorrectAnswerResponse.builder().corrects(answerResult).timeout(question.getTimeout()).encryptKey(jsSideKey).totalStudent(totalStudent).totalStudentCorrect(totalStudentCorrectAns).totalStudentWrong(totalStudentWrongAns).build());
+
+
+        Page<StudentScoreResponse> response = studentAnswerRepository.findTopStudent(challengeId, Pageable.unpaged());
+
+
+        return listConverter.toPageResponse(response);
     }
 
     /**
@@ -119,11 +150,6 @@ public class OrganizeServiceImpl implements OrganizeService {
     public PageResponse<StudentScoreResponse> getTopStudent(int challengeId, Pageable pageable) {
 
         Page<StudentScoreResponse> response = studentAnswerRepository.findTopStudent(challengeId, pageable);
-
-        int rankNum = 1;
-        for (StudentScoreResponse studentScoreResponse : response) {
-            studentScoreResponse.setRank(rankNum++);
-        }
 
         return listConverter.toPageResponse(response);
     }
@@ -267,9 +293,14 @@ public class OrganizeServiceImpl implements OrganizeService {
         broadcastOperations.sendEvent("updateChallengeStatus", HostRegisterSuccess.builder().totalStudentInChallenge(0).currentExam(this.getCurrentPublishedExam(challengeId)).build());
     }
 
+    @Override
+    public PageResponse<StudentInChallengeResponse> getAllStudentInChallengeIsLogin(int challengeId) {
+        return listConverter.toPageResponse(studentInChallengeRepository.findAllStudentIsLogin(challengeId, Pageable.unpaged()));
+    }
+
 
     @Override
-    public List<StudentInChallengeResponse> openChallenge(Admin userDetails, int challengeId) throws Exception {
+    public void openChallenge(Admin userDetails, int challengeId) throws Exception {
         Optional<Challenge> optional = challengeRepository.findOneById(challengeId);
         Challenge challenge = optional.orElseThrow(() -> new NullPointerException("Challenge not found"));
 
@@ -283,13 +314,12 @@ public class OrganizeServiceImpl implements OrganizeService {
         challenge.setChallengeStatus(ChallengeStatus.WAITING);
         challengeRepository.updateChallengeStatusById(ChallengeStatus.WAITING, challengeId);
 
-        List<StudentInChallenge> studentsInChallenge = studentChallengeRepository.findAllByPrimaryKeyChallengeIdAndPrimaryKeyChallengeAdminId(challengeId, userDetails.getId());
-        return listConverter.toListResponse(studentsInChallenge, StudentInChallengeConverter::toStudentChallengeResponse);
+
 
     }
 
 
-    private void createAllStudentAnswerInChallenge(Challenge challenge) throws Exception {
+        private void createAllStudentAnswerInChallenge(Challenge challenge) throws Exception {
 
 
         List<Student> students = studentRepository.findAllStudentInChallenge(challenge.getId());
