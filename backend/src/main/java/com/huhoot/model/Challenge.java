@@ -25,28 +25,20 @@ public class Challenge extends Auditable {
 
     private String coverImage;
 
-    private boolean randomAnswer;
-
-    private boolean randomQuest;
-
     private ChallengeStatus challengeStatus;
 
-    private Integer userAutoOrganizeId;
-
-    private boolean autoOrganize;
-
     @ManyToOne
-    @JoinColumn(name = "admin_id")
-    private Admin admin;
+    @JoinColumn(name = "customer_id")
+    private Customer customer;
 
     @OneToMany(mappedBy = "challenge")
     private List<Question> questions = new ArrayList<>();
 
-    @OneToMany(mappedBy = "primaryKey.challenge")
+    @OneToMany(mappedBy = "key.challenge")
     private List<StudentAnswer> studentAnswers = new ArrayList<>();
 
-    @OneToMany(mappedBy = "primaryKey.challenge")
-    private List<StudentInChallenge> studentChallenges = new ArrayList<>();
+    @OneToMany(mappedBy = "key.challenge")
+    private List<Participant> participants = new ArrayList<>();
 
     private boolean isNonDeleted;
 

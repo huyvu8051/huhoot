@@ -1,10 +1,10 @@
-package com.huhoot.student.manage;
+package com.huhoot.customer.manage;
 
 import com.huhoot.converter.ChallengeConverter;
 import com.huhoot.converter.ListConverter;
 import com.huhoot.dto.ChallengeResponse;
 import com.huhoot.model.Challenge;
-import com.huhoot.model.Student;
+import com.huhoot.model.Customer;
 import com.huhoot.repository.ChallengeRepository;
 import com.huhoot.vue.vdatatable.paging.PageResponse;
 import lombok.AllArgsConstructor;
@@ -24,7 +24,7 @@ public class StudentManageServiceImpl implements StudentManageService {
     private final ListConverter listConverter;
 
     @Override
-    public PageResponse<ChallengeResponse> findAllChallenge(Student userDetails, Pageable pageable) {
+    public PageResponse<ChallengeResponse> findAllChallenge(Customer userDetails, Pageable pageable) {
         List<Challenge> challenges = challengeRepository.findAllByStudentIdAndIsAvailable(userDetails.getId(), pageable);
 
 

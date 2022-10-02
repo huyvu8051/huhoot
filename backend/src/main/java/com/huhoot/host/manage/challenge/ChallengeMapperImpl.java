@@ -2,7 +2,6 @@ package com.huhoot.host.manage.challenge;
 
 import com.huhoot.auditing.AuditingMapper;
 import com.huhoot.dto.ChallengeResponse;
-import com.huhoot.model.Admin;
 import com.huhoot.model.Challenge;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Primary;

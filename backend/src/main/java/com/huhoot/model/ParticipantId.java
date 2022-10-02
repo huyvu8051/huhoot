@@ -10,11 +10,11 @@ import java.io.Serializable;
 
 @Embeddable
 @Data
-public class StudentInChallengeId implements Serializable {
+public class ParticipantId implements Serializable {
 
 	@ManyToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "student_id")
-	private Student student;
+	@JoinColumn(name = "customer_id")
+	private Customer customer;
 
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "challenge_id")

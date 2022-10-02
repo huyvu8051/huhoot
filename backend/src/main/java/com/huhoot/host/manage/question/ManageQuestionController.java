@@ -1,8 +1,7 @@
 package com.huhoot.host.manage.question;
 
 import com.huhoot.exception.NotYourOwnException;
-import com.huhoot.functional.impl.CheckOwnerChallenge;
-import com.huhoot.model.Admin;
+import com.huhoot.model.Customer;
 import com.huhoot.vue.vdatatable.paging.PageResponse;
 import com.huhoot.vue.vdatatable.paging.VDataTablePagingConverter;
 import lombok.AllArgsConstructor;
@@ -21,14 +20,12 @@ public class ManageQuestionController {
 
     private final ManageQuestionService manageQuestionService;
 
-    private final CheckOwnerChallenge checkOwnerChallenge;
-
     private final VDataTablePagingConverter vDataTablePagingConverter;
 
 
     @PostMapping("/question/findAll")
     public ResponseEntity<PageResponse<QuestionResponse>> findAll(@RequestBody FindAllQuestionRequest request) {
-        Admin userDetails = (Admin) SecurityContextHolder.getContext().getAuthentication()
+        Customer userDetails = (Customer) SecurityContextHolder.getContext().getAuthentication()
                 .getPrincipal();
 
         Pageable pageable = vDataTablePagingConverter.toPageable(request);
@@ -39,26 +36,26 @@ public class ManageQuestionController {
     @PostMapping("/question")
     public ResponseEntity<QuestionResponse> add(@Valid @RequestBody QuestionAddRequest request) throws IOException, NullPointerException, NotYourOwnException {
 
-        Admin userDetails = (Admin) SecurityContextHolder.getContext().getAuthentication()
+        Customer userDetails = (Customer) SecurityContextHolder.getContext().getAuthentication()
                 .getPrincipal();
 
-        return ResponseEntity.ok(manageQuestionService.addOneQuestion(userDetails, request, checkOwnerChallenge));
+        return ResponseEntity.ok(manageQuestionService.addOneQuestion(userDetails, request));
 
     }
 
 
     @PatchMapping("/question")
     public void update(@RequestBody QuestionUpdateRequest request) throws NotYourOwnException, NullPointerException {
-        Admin userDetails = (Admin) SecurityContextHolder.getContext().getAuthentication()
+        Customer userDetails = (Customer) SecurityContextHolder.getContext().getAuthentication()
                 .getPrincipal();
-        manageQuestionService.updateOneQuestion(userDetails, request, checkOwnerChallenge);
+        manageQuestionService.updateOneQuestion(userDetails, request);
 
 
     }
 
     @PatchMapping("/question/ordinal")
     public void updateOrdinal(@RequestBody QuestionOrdinalUpdateRequest request) throws NotYourOwnException, NullPointerException {
-        Admin userDetails = (Admin) SecurityContextHolder.getContext().getAuthentication()
+        Customer userDetails = (Customer) SecurityContextHolder.getContext().getAuthentication()
                 .getPrincipal();
         manageQuestionService.updateOrdinal(userDetails, request);
 

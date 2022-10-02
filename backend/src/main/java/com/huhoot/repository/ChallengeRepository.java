@@ -64,10 +64,10 @@ public interface ChallengeRepository extends JpaRepository<Challenge, Integer> {
 
 
 
-    @Query("SELECT n.primaryKey.challenge " +
-            "FROM StudentInChallenge n " +
-            "WHERE n.primaryKey.student.id = :studentId AND n.primaryKey.challenge.isNonDeleted = TRUE " +
-            "AND n.primaryKey.challenge.challengeStatus <> com.huhoot.enums.ChallengeStatus.BUILDING")
+    @Query("SELECT n.key.challenge " +
+            "FROM Participant n " +
+            "WHERE n.key.customer.id = :studentId AND n.key.challenge.isNonDeleted = TRUE " +
+            "AND n.key.challenge.challengeStatus <> com.huhoot.enums.ChallengeStatus.BUILDING")
     List<Challenge> findAllByStudentIdAndIsAvailable(@Param("studentId") int studentId, Pageable pageable);
 
     @Modifying

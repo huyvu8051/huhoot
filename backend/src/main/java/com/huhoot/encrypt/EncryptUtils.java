@@ -166,7 +166,7 @@ public class EncryptUtils {
 
     }
 
-    // generate key for student sent answer, use answerIds key to decrypt questionToken to get answerTime limit
+    // generate key for customer sent answer, use answerIds key to decrypt questionToken to get answerTime limit
 
 
     public Key createKeyFromAnswerResultResponses(List<PublishAnswer> answers) {

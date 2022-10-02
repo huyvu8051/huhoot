@@ -1,19 +1,19 @@
 package com.huhoot.converter;
 
 import com.huhoot.host.manage.studentInChallenge.StudentInChallengeResponse;
-import com.huhoot.model.Student;
-import com.huhoot.model.StudentInChallenge;
+import com.huhoot.model.Customer;
+import com.huhoot.model.Participant;
 
 public class StudentInChallengeConverter {
 
-    public static StudentInChallengeResponse toStudentChallengeResponse(StudentInChallenge entity){
+    public static StudentInChallengeResponse toStudentChallengeResponse(Participant entity){
         StudentInChallengeResponse response = new StudentInChallengeResponse();
 
-        Student student = entity.getStudent();
+        Customer customer = entity.getCustomer();
 
-        response.setStudentId(student.getId());
-        response.setStudentUsername(student.getUsername());
-        response.setStudentFullName(student.getFullName());
+        response.setStudentId(customer.getId());
+        response.setStudentUsername(customer.getUsername());
+        response.setStudentFullName(customer.getFullName());
         response.setIsLogin(entity.isLogin());
         response.setIsKicked(entity.isKicked());
         response.setIsOnline(entity.isOnline());

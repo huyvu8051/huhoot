@@ -2,9 +2,8 @@ package com.huhoot.organize;
 
 import com.corundumstudio.socketio.SocketIOClient;
 import com.huhoot.exception.NoClientInBroadcastOperations;
-import com.huhoot.host.manage.studentInChallenge.StudentInChallengeResponse;
-import com.huhoot.model.Admin;
 import com.huhoot.model.Challenge;
+import com.huhoot.model.Customer;
 import com.huhoot.model.Question;
 import com.huhoot.vue.vdatatable.paging.PageResponse;
 import org.springframework.data.domain.Pageable;
@@ -13,9 +12,9 @@ import java.util.List;
 
 public interface OrganizeService {
 
-    void openChallenge(Admin userDetails, int id) throws Exception;
+    void openChallenge(Customer userDetails, int id) throws Exception;
 
-    List<StudentInChallengeResponse> getAllStudentInChallengeIsLogin(Admin userDetails, int challengeId);
+    List<StudentInChallengeResponse> getAllStudentInChallengeIsLogin(Customer userDetails, int challengeId);
 
     /**
      * Start challenge, update challenge status to IN_PROGRESS
@@ -39,7 +38,7 @@ public interface OrganizeService {
     /**
      * @param challengeId {@link Challenge} id
      * @param pageable    {@link Pageable}
-     * @return List of top 20 student have best total challenge score
+     * @return List of top 20 customer have best total challenge score
      */
     PageResponse<StudentScoreResponse> getTopStudent(int challengeId, Pageable pageable);
 
@@ -54,9 +53,9 @@ public interface OrganizeService {
 
 
     /**
-     * @param studentIds  List of {@link com.huhoot.model.Student} ids
+     * @param studentIds  List of {@link Customer} ids
      * @param challengeId {@link Challenge} id
-     * @param adminId     {@link Admin} id
+     * @param adminId     {@link Customer} id
      */
     void kickStudent(List<Integer> studentIds, int challengeId, int adminId);
 

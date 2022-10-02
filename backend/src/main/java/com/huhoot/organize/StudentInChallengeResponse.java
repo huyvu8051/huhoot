@@ -1,10 +1,8 @@
-package com.huhoot.host.manage.studentInChallenge;
+package com.huhoot.organize;
 
 import com.huhoot.auditing.AuditableDto;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.Date;
 
 @Data
 @NoArgsConstructor

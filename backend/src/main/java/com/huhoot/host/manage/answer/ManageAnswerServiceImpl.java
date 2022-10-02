@@ -2,9 +2,9 @@ package com.huhoot.host.manage.answer;
 
 import com.huhoot.converter.AnswerConverter;
 import com.huhoot.converter.ListConverter;
+import com.huhoot.model.Customer;
 import com.huhoot.organize.PublishAnswer;
 import com.huhoot.mapper.AnswerMapper;
-import com.huhoot.model.Admin;
 import com.huhoot.model.Answer;
 import com.huhoot.model.Question;
 import com.huhoot.repository.AnswerRepository;
@@ -27,7 +27,7 @@ public class ManageAnswerServiceImpl implements ManageAnswerService {
     private final QuestionRepository questionRepository;
 
     @Override
-    public PageResponse<PublishAnswer> findAllAnswerByQuestionId(Admin userDetails, int questionId, Pageable pageable) {
+    public PageResponse<PublishAnswer> findAllAnswerByQuestionId(Customer userDetails, int questionId, Pageable pageable) {
         Page<PublishAnswer> answers = answerRepository.findAllByQuestionIdAndAdminId(questionId, userDetails.getId(), pageable);
 
         return listConverter.toPageResponse(answers);
@@ -35,7 +35,7 @@ public class ManageAnswerServiceImpl implements ManageAnswerService {
 
 
     @Override
-    public void addOneAnswer(Admin userDetails, AnswerAddRequest request) throws Exception {
+    public void addOneAnswer(Customer userDetails, AnswerAddRequest request) throws Exception {
         Optional<Question> optional = questionRepository.findOneById(request.getQuestionId());
 
         Question question = optional.orElseThrow(() -> new NullPointerException("Challenge not found"));
@@ -51,7 +51,7 @@ public class ManageAnswerServiceImpl implements ManageAnswerService {
     private final AnswerMapper answerMapper;
 
     @Override
-    public void updateOneAnswer(Admin userDetails, AnswerUpdateRequest request) {
+    public void updateOneAnswer(Customer userDetails, AnswerUpdateRequest request) {
         Optional<Answer> optional = answerRepository.findOneById(request.getId());
 
         Answer answer = optional.orElseThrow(() -> new NullPointerException("Challenge not found"));
@@ -62,7 +62,7 @@ public class ManageAnswerServiceImpl implements ManageAnswerService {
     }
 
     @Override
-    public void updateOrdinal(Admin userDetails, AnswerOrdinalUpdateRequest request) {
+    public void updateOrdinal(Customer userDetails, AnswerOrdinalUpdateRequest request) {
         List<AnswerOrdinal> list = request.getList();
         List<Answer> result = new ArrayList<>();
 

@@ -1,6 +1,6 @@
 package com.huhoot.participate;
 
-import com.huhoot.model.Student;
+import com.huhoot.model.Customer;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +21,7 @@ public class ParticipateController {
     @PostMapping("/sendAnswer")
     public ResponseEntity<SendAnswerResponse> sendAnswer(@RequestBody StudentAnswerRequest request) throws Exception {
 
-        Student userDetails = (Student) SecurityContextHolder.getContext().getAuthentication()
+        Customer userDetails = (Customer) SecurityContextHolder.getContext().getAuthentication()
                 .getPrincipal();
 
         return ResponseEntity.ok(participateService.sendAnswer(request, userDetails));

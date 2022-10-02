@@ -3,8 +3,7 @@ package com.huhoot.student;
 import com.huhoot.repository.StudentRepository;
 import com.huhoot.dto.ChangePasswordRequest;
 import com.huhoot.exception.AccountException;
-import com.huhoot.model.Student;
-import com.huhoot.student.StudentAccountService;
+import com.huhoot.model.Customer;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -16,7 +15,7 @@ public class StudentAccountServiceImpl implements StudentAccountService {
     private final StudentRepository studentRepository;
 
     @Override
-    public void changePassword(ChangePasswordRequest request, Student user) throws AccountException {
+    public void changePassword(ChangePasswordRequest request, Customer user) throws AccountException {
         boolean matches = passwordEncoder.matches(request.getOldPassword(),user.getPassword());
 
         if(!matches)throw new AccountException("Old password incorrect!");

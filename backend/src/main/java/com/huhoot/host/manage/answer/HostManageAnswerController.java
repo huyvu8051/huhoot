@@ -1,7 +1,7 @@
 package com.huhoot.host.manage.answer;
 
+import com.huhoot.model.Customer;
 import com.huhoot.organize.PublishAnswer;
-import com.huhoot.model.Admin;
 import com.huhoot.vue.vdatatable.paging.PageResponse;
 import com.huhoot.vue.vdatatable.paging.VDataTablePagingConverter;
 import lombok.AllArgsConstructor;
@@ -23,7 +23,7 @@ public class HostManageAnswerController {
     @PostMapping("/answer/findAll")
     public ResponseEntity<PageResponse<PublishAnswer>> findAll(@RequestBody FindAllAnswerRequest request) {
 
-        Admin userDetails = (Admin) SecurityContextHolder.getContext().getAuthentication()
+        Customer userDetails = (Customer) SecurityContextHolder.getContext().getAuthentication()
                 .getPrincipal();
         Pageable pageable = vDataTablePagingConverter.toPageable(request);
 
@@ -34,7 +34,7 @@ public class HostManageAnswerController {
     @PostMapping("/answer")
     public void add(@Valid @RequestBody AnswerAddRequest request) throws Exception {
 
-        Admin userDetails = (Admin) SecurityContextHolder.getContext().getAuthentication()
+        Customer userDetails = (Customer) SecurityContextHolder.getContext().getAuthentication()
                 .getPrincipal();
 
         manageAnswerService.addOneAnswer(userDetails, request);
@@ -43,14 +43,14 @@ public class HostManageAnswerController {
 
     @PatchMapping("/answer")
     public void update(@Valid @RequestBody AnswerUpdateRequest request) {
-        Admin userDetails = (Admin) SecurityContextHolder.getContext().getAuthentication()
+        Customer userDetails = (Customer) SecurityContextHolder.getContext().getAuthentication()
                 .getPrincipal();
         manageAnswerService.updateOneAnswer(userDetails, request);
     }
 
     @PatchMapping("/answer/ordinal")
     public void updateOrdinal(@Valid @RequestBody AnswerOrdinalUpdateRequest request) {
-        Admin userDetails = (Admin) SecurityContextHolder.getContext().getAuthentication()
+        Customer userDetails = (Customer) SecurityContextHolder.getContext().getAuthentication()
                 .getPrincipal();
         manageAnswerService.updateOrdinal(userDetails, request);
     }

@@ -24,7 +24,7 @@ public class StudentAnswerId implements Serializable {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "student_id")
-    private Student student;
+    private Customer customer;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "answer_id")

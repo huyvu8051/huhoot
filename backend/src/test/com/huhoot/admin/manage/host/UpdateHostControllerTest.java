@@ -1,8 +1,6 @@
 package com.huhoot.admin.manage.host;
 
 import com.huhoot.exception.UsernameExistedException;
-import com.huhoot.model.Admin;
-import com.huhoot.repository.AdminRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

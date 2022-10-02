@@ -45,7 +45,7 @@ public class SecurityConfiguration {
                 .permitAll()
                 .antMatchers("/api/admin/**").hasAuthority("ADMIN")
                 .antMatchers("/api/organizer/**").hasAnyAuthority("HOST", "ADMIN")
-                .antMatchers("/api/student/**").hasAuthority("STUDENT")
+                .antMatchers("/api/customer/**").hasAuthority("STUDENT")
                 .anyRequest().authenticated()
                 .and()
                 .exceptionHandling().accessDeniedHandler(accessDeniedHandler)

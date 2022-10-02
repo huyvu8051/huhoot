@@ -1,11 +1,11 @@
 package com.huhoot.mapper.impl;
 
-import com.huhoot.host.manage.studentInChallenge.StudentInChallengeResponse;
-import com.huhoot.host.manage.studentInChallenge.StudentInChallengeUpdateRequest;
+import com.huhoot.dto.StudentInChallengeUpdateRequest;
 import com.huhoot.mapper.StudentInChallengeMapper;
-import com.huhoot.model.Student;
-import com.huhoot.model.StudentInChallenge;
-import com.huhoot.model.StudentInChallengeId;
+import com.huhoot.model.Customer;
+import com.huhoot.model.Participant;
+import com.huhoot.model.ParticipantId;
+import com.huhoot.organize.StudentInChallengeResponse;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
@@ -21,7 +21,7 @@ import javax.annotation.Generated;
 public class StudentInChallengeMapperImpl implements StudentInChallengeMapper {
 
     @Override
-    public StudentInChallengeResponse toDto(StudentInChallenge entity) {
+    public StudentInChallengeResponse toDto(Participant entity) {
         if (entity == null) {
             return null;
         }
@@ -44,7 +44,7 @@ public class StudentInChallengeMapperImpl implements StudentInChallengeMapper {
     }
 
     @Override
-    public void update(StudentInChallengeUpdateRequest dto, StudentInChallenge entity) {
+    public void update(StudentInChallengeUpdateRequest dto, Participant entity) {
         if (dto == null) {
             return;
         }
@@ -57,54 +57,54 @@ public class StudentInChallengeMapperImpl implements StudentInChallengeMapper {
         }
     }
 
-    private int entityPrimaryKeyStudentId(StudentInChallenge studentInChallenge) {
-        if (studentInChallenge == null) {
+    private int entityPrimaryKeyStudentId(Participant participant) {
+        if (participant == null) {
             return 0;
         }
-        StudentInChallengeId primaryKey = studentInChallenge.getPrimaryKey();
+        ParticipantId primaryKey = participant.getKey();
         if (primaryKey == null) {
             return 0;
         }
-        Student student = primaryKey.getStudent();
-        if (student == null) {
+        Customer customer = primaryKey.getCustomer();
+        if (customer == null) {
             return 0;
         }
-        int id = student.getId();
+        int id = customer.getId();
         return id;
     }
 
-    private String entityPrimaryKeyStudentUsername(StudentInChallenge studentInChallenge) {
-        if (studentInChallenge == null) {
+    private String entityPrimaryKeyStudentUsername(Participant participant) {
+        if (participant == null) {
             return null;
         }
-        StudentInChallengeId primaryKey = studentInChallenge.getPrimaryKey();
+        ParticipantId primaryKey = participant.getKey();
         if (primaryKey == null) {
             return null;
         }
-        Student student = primaryKey.getStudent();
-        if (student == null) {
+        Customer customer = primaryKey.getCustomer();
+        if (customer == null) {
             return null;
         }
-        String username = student.getUsername();
+        String username = customer.getUsername();
         if (username == null) {
             return null;
         }
         return username;
     }
 
-    private String entityPrimaryKeyStudentFullName(StudentInChallenge studentInChallenge) {
-        if (studentInChallenge == null) {
+    private String entityPrimaryKeyStudentFullName(Participant participant) {
+        if (participant == null) {
             return null;
         }
-        StudentInChallengeId primaryKey = studentInChallenge.getPrimaryKey();
+        ParticipantId primaryKey = participant.getKey();
         if (primaryKey == null) {
             return null;
         }
-        Student student = primaryKey.getStudent();
-        if (student == null) {
+        Customer customer = primaryKey.getCustomer();
+        if (customer == null) {
             return null;
         }
-        String fullName = student.getFullName();
+        String fullName = customer.getFullName();
         if (fullName == null) {
             return null;
         }

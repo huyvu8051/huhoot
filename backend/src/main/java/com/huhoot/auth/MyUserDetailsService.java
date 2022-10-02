@@ -1,9 +1,7 @@
 package com.huhoot.auth;
 
+import com.huhoot.model.Customer;
 import com.huhoot.repository.StudentRepository;
-import com.huhoot.model.Admin;
-import com.huhoot.model.Student;
-import com.huhoot.repository.AdminRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -29,8 +27,8 @@ public class MyUserDetailsService implements UserDetailsService {
             Optional<Admin> adminOptional = adminRepository.findOneByUsername(username);
             userDetails = adminOptional.orElseThrow(() -> new UsernameNotFoundException("Account not found"));
         } else {
-            Optional<Student> optionalStudent = studentRepository.findOneByUsername(username);
-            userDetails = optionalStudent.orElseThrow(() -> new UsernameNotFoundException("Account not found!"));
+            Optional<Customer> optionalStudent = studentRepository.findOneByUsername(username);
+            userDetails = optionalcustomer.orElseThrow(() -> new UsernameNotFoundException("Account not found!"));
         }
 
 

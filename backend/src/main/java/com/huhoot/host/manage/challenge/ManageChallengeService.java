@@ -2,9 +2,8 @@ package com.huhoot.host.manage.challenge;
 
 import com.huhoot.dto.ChallengeResponse;
 import com.huhoot.exception.NotYourOwnException;
-import com.huhoot.host.manage.studentInChallenge.StudentInChallengeResponse;
-import com.huhoot.model.Admin;
 import com.huhoot.model.Challenge;
+import com.huhoot.model.Customer;
 import com.huhoot.vue.vdatatable.paging.PageResponse;
 import org.springframework.data.domain.Pageable;
 
@@ -16,7 +15,7 @@ public interface ManageChallengeService {
 
     PageResponse<ChallengeResponse> findAllOwnChallenge(int adminId, Pageable pageable);
 
-    ChallengeResponse addOneChallenge(Admin userDetails, ChallengeAddRequest request) throws IOException;
+    ChallengeResponse addOneChallenge(Customer customer, ChallengeAddRequest request) throws IOException;
 
     void updateOneChallenge(ChallengeUpdateRequest request, Challenge challenge) throws NotYourOwnException, NullPointerException;
 

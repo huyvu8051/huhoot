@@ -1,7 +1,6 @@
 package com.huhoot.autoorganize;
 
 import com.huhoot.exception.NoClientInBroadcastOperations;
-import com.huhoot.model.Admin;
 import com.huhoot.model.Challenge;
 import com.huhoot.model.CustomUserDetails;
 import com.huhoot.model.Question;
@@ -10,7 +9,6 @@ import com.huhoot.repository.ChallengeRepository;
 import com.huhoot.repository.QuestionRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;

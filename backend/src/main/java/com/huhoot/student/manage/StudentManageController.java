@@ -1,7 +1,7 @@
-package com.huhoot.student.manage;
+package com.huhoot.customer.manage;
 
 import com.huhoot.dto.ChallengeResponse;
-import com.huhoot.model.Student;
+import com.huhoot.model.Customer;
 import com.huhoot.vue.vdatatable.paging.PageResponse;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -31,7 +31,7 @@ public class StudentManageController {
                                         @RequestParam(defaultValue = "DESC") String direction) {
         Pageable pageable = PageRequest.of(page, itemsPerPage, Sort.Direction.fromString(direction), sortBy);
 
-        Student userDetails = (Student) SecurityContextHolder.getContext().getAuthentication()
+        Customer userDetails = (Customer) SecurityContextHolder.getContext().getAuthentication()
                 .getPrincipal();
             return ResponseEntity.ok(studentService.findAllChallenge(userDetails, pageable));
 

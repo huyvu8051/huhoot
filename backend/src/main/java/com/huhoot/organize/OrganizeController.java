@@ -1,7 +1,6 @@
 package com.huhoot.organize;
 
 import com.huhoot.host.manage.studentInChallenge.StudentInChallengeResponse;
-import com.huhoot.model.Admin;
 import com.huhoot.repository.QuestionRepository;
 import com.huhoot.vue.vdatatable.paging.PageResponse;
 import lombok.AllArgsConstructor;
@@ -91,7 +90,7 @@ public class OrganizeController {
 
 
     /**
-     * Kick student
+     * Kick customer
      *
      * @param req {@link KickRequest}
      */

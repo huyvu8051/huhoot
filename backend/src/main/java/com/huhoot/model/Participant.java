@@ -10,17 +10,16 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Entity
 @AssociationOverrides({
-        @AssociationOverride(name = "primaryKey.student", joinColumns = @JoinColumn(name = "student_id")),
-        @AssociationOverride(name = "primaryKey.challenge", joinColumns = @JoinColumn(name = "challenge_id"))})
+        @AssociationOverride(name = "key.customer", joinColumns = @JoinColumn(name = "customer_id")),
+        @AssociationOverride(name = "key.challenge", joinColumns = @JoinColumn(name = "challenge_id"))})
 @EntityListeners({AuditingEntityListener.class})
-public class StudentInChallenge extends Auditable {
+public class Participant extends Auditable {
 
 
     private boolean isLogin;
 
     @EmbeddedId
-
-    private StudentInChallengeId primaryKey = new StudentInChallengeId();
+    private ParticipantId key = new ParticipantId();
 
     private int totalScore;
 
@@ -30,8 +29,8 @@ public class StudentInChallenge extends Auditable {
 
     private boolean isNonDeleted;
 
-    public StudentInChallenge(Student student, Challenge challenge) {
-        this.setStudent(student);
+    public Participant(Customer customer, Challenge challenge) {
+        this.setCustomer(customer);
         this.setChallenge(challenge);
         this.isLogin = false;
         this.totalScore = 0;
@@ -42,21 +41,21 @@ public class StudentInChallenge extends Auditable {
 
 
     @Transient
-    public Student getStudent() {
-        return getPrimaryKey().getStudent();
+    public Customer getCustomer() {
+        return getKey().getCustomer();
     }
 
-    public void setStudent(Student student) {
-        getPrimaryKey().setStudent(student);
+    public void setCustomer(Customer customer) {
+        getKey().setCustomer(customer);
     }
 
     @Transient
     public Challenge getChallenge() {
-        return primaryKey.getChallenge();
+        return key.getChallenge();
     }
 
     public void setChallenge(Challenge challenge) {
-        getPrimaryKey().setChallenge(challenge);
+        getKey().setChallenge(challenge);
     }
 
     public boolean isLogin() {

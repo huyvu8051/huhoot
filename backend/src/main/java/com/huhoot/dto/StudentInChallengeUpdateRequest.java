@@ -1,4 +1,4 @@
-package com.huhoot.host.manage.studentInChallenge;
+package com.huhoot.dto;
 
 import lombok.Data;
 

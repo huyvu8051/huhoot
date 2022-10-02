@@ -9,9 +9,9 @@ import com.huhoot.exception.ChallengeException;
 import com.huhoot.host.manage.challenge.ChallengeMapper;
 import com.huhoot.dto.ChallengeResponse;
 import com.huhoot.model.Challenge;
+import com.huhoot.model.Customer;
 import com.huhoot.model.Question;
-import com.huhoot.model.Student;
-import com.huhoot.model.StudentInChallenge;
+import com.huhoot.model.Participant;
 import com.huhoot.organize.AnswerResultResponse;
 import com.huhoot.organize.PublishAnswer;
 import com.huhoot.organize.PublishQuestion;
@@ -50,23 +50,23 @@ public class ParticipateServiceImpl implements ParticipateService {
 
 
     @Override
-    public void join(SocketIOClient client, int challengeId, Student student) throws ChallengeException {
+    public void join(SocketIOClient client, int challengeId, Customer customer) throws ChallengeException {
 
-        Optional<StudentInChallenge> optional = studentInChallengeRepository.findOneByChallengeIdAndStudentIdAndAvailable(challengeId, student.getId());
-        StudentInChallenge studentInChallenge = optional.orElseThrow(() -> new ChallengeException("Challenge not available!"));
-        Challenge challenge = studentInChallenge.getChallenge();
+        Optional<Participant> optional = studentInChallengeRepository.findOneByChallengeIdAndStudentIdAndAvailable(challengeId, customer.getId());
+        Participant participant = optional.orElseThrow(() -> new ChallengeException("Challenge not available!"));
+        Challenge challenge = participant.getChallenge();
         ChallengeStatus challengeStatus = challenge.getChallengeStatus();
 
         if (challengeStatus.equals(ChallengeStatus.IN_PROGRESS) || challengeStatus.equals(ChallengeStatus.LOCKED)) {
-            if (!studentInChallenge.isLogin()) {
+            if (!participant.isLogin()) {
                 throw new ChallengeException("Challenge not available!");
             }
         }
         // if another device connect to server, disconnect old client
         // Prevent multi device connect to server
-        if (student.getSocketId() != null && !student.getSocketId().equals(client.getSessionId())) {
+        if (customer.getSocketId() != null && !customer.getSocketId().equals(client.getSessionId())) {
             try {
-                SocketIOClient oldClient = socketIOServer.getClient(student.getSocketId());
+                SocketIOClient oldClient = socketIOServer.getClient(customer.getSocketId());
                 oldClient.sendEvent("joinError", "joinError");
                 oldClient.disconnect();
             } catch (Exception e) {
@@ -75,14 +75,14 @@ public class ParticipateServiceImpl implements ParticipateService {
         }
 
 
-        double totalPoints = studentAnswerRepository.getTotalPointInChallenge(challengeId, student.getId());
+        double totalPoints = studentAnswerRepository.getTotalPointInChallenge(challengeId, customer.getId());
 
         client.joinRoom(challengeId + "");
         client.sendEvent("registerSuccess", ParticipateJoinSuccessRes.builder().totalPoints(totalPoints).currentExam(this.getCurrentPublishedExam(challengeId)).build());
         // update socket id
-        studentRepository.updateSocketId(client.getSessionId(), student.getId());
-        studentInChallenge.setLogin(true);
-        studentInChallengeRepository.save(studentInChallenge);
+        studentRepository.updateSocketId(client.getSessionId(), customer.getId());
+        participant.setLogin(true);
+        studentInChallengeRepository.save(participant);
 
     }
 
@@ -113,7 +113,7 @@ public class ParticipateServiceImpl implements ParticipateService {
 
 
     @Override
-    public SendAnswerResponse sendAnswer(StudentAnswerRequest request, Student student) throws Exception {
+    public SendAnswerResponse sendAnswer(StudentAnswerRequest request, Customer customer) throws Exception {
 
 
         long nowLong = System.currentTimeMillis();
@@ -136,7 +136,7 @@ public class ParticipateServiceImpl implements ParticipateService {
         } else if (answerTimeLimit >= nowLong) {
             // correct answer
             isAnswersCorrect = true;
-            comboCount = encryptUtils.extractCombo(request.getComboToken(), student.getUsername(), quest.getPublishedOrderNumber());
+            comboCount = encryptUtils.extractCombo(request.getComboToken(), customer.getUsername(), quest.getPublishedOrderNumber());
             comboCount++;
             pointReceive = calculatePoint(quest.getAskDate(), nowLong, quest.getPoint().getValue(), quest.getAnswerTimeLimit(), comboCount);
 
@@ -148,7 +148,7 @@ public class ParticipateServiceImpl implements ParticipateService {
         }
 
 
-        studentAnswerRepository.updateAnswerPoint(request.getAnswerIds(), student.getId(), pointReceive / request.getAnswerIds().size(), isAnswersCorrect, nowLong);
+        studentAnswerRepository.updateAnswerPoint(request.getAnswerIds(), customer.getId(), pointReceive / request.getAnswerIds().size(), isAnswersCorrect, nowLong);
 
 
         // sent socket to host notice answered
@@ -156,7 +156,7 @@ public class ParticipateServiceImpl implements ParticipateService {
 //        socketIOServer.getClient(adminSocketId).sendEvent("studentAnswer");
 
         // encrypt response message
-        String nextComboToken = encryptUtils.prepareComboToken(student.getUsername(), quest.getPublishedOrderNumber() + 1, comboCount);
+        String nextComboToken = encryptUtils.prepareComboToken(customer.getUsername(), quest.getPublishedOrderNumber() + 1, comboCount);
 
         String encryptedResponse = encryptUtils.genEncryptedResponse(pointReceive, comboCount, quest.getEncryptKey());
 

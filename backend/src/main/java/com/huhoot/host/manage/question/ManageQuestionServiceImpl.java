@@ -2,12 +2,11 @@ package com.huhoot.host.manage.question;
 
 import com.huhoot.converter.ListConverter;
 import com.huhoot.converter.QuestionConverter;
-import com.huhoot.exception.NotYourOwnException;
-import com.huhoot.functional.CheckedFunction;
 import com.huhoot.encrypt.EncryptUtils;
+import com.huhoot.exception.NotYourOwnException;
 import com.huhoot.mapper.QuestionMapper;
-import com.huhoot.model.Admin;
 import com.huhoot.model.Challenge;
+import com.huhoot.model.Customer;
 import com.huhoot.model.Question;
 import com.huhoot.repository.ChallengeRepository;
 import com.huhoot.repository.QuestionRepository;
@@ -39,12 +38,10 @@ public class ManageQuestionServiceImpl implements ManageQuestionService {
     }
 
     @Override
-    public QuestionResponse addOneQuestion(Admin userDetails, QuestionAddRequest request, CheckedFunction<Admin, Challenge> checker) throws NotYourOwnException, NullPointerException {
+    public QuestionResponse addOneQuestion(Customer userDetails, QuestionAddRequest request) throws NotYourOwnException, NullPointerException {
         Optional<Challenge> optional = challengeRepository.findOneById(request.getChallengeId());
 
         Challenge challenge = optional.orElseThrow(() -> new NullPointerException("Challenge not found"));
-
-        checker.accept(userDetails, challenge);
 
         Question question = QuestionConverter.toEntity(request);
 
@@ -63,12 +60,10 @@ public class ManageQuestionServiceImpl implements ManageQuestionService {
     }
 
     @Override
-    public void updateOneQuestion(Admin userDetails, QuestionUpdateRequest request, CheckedFunction<Admin, Challenge> checker) throws NotYourOwnException, NullPointerException {
+    public void updateOneQuestion(Customer userDetails, QuestionUpdateRequest request) throws NotYourOwnException, NullPointerException {
         Optional<Question> optional = questionRepository.findOneById(request.getId());
 
         Question question = optional.orElseThrow(() -> new NullPointerException("Question not found"));
-
-        checker.accept(userDetails, question.getChallenge());
 
         questionMapper.update(request, question);
 
@@ -76,7 +71,7 @@ public class ManageQuestionServiceImpl implements ManageQuestionService {
     }
 
     @Override
-    public void updateOrdinal(Admin userDetails, QuestionOrdinalUpdateRequest request) {
+    public void updateOrdinal(Customer userDetails, QuestionOrdinalUpdateRequest request) {
         List<QuestionOrdinal> list = request.getList();
 
         List<Question> result = new ArrayList<>();

@@ -3,9 +3,8 @@ package com.huhoot.host.manage.challenge;
 import com.huhoot.converter.ListConverter;
 import com.huhoot.dto.ChallengeResponse;
 import com.huhoot.exception.NotYourOwnException;
-import com.huhoot.host.manage.studentInChallenge.StudentInChallengeResponse;
-import com.huhoot.model.Admin;
 import com.huhoot.model.Challenge;
+import com.huhoot.model.Customer;
 import com.huhoot.repository.ChallengeRepository;
 import com.huhoot.repository.StudentAnswerRepository;
 import com.huhoot.vue.vdatatable.paging.PageResponse;
@@ -40,10 +39,11 @@ public class ManageChallengeServiceImpl implements ManageChallengeService {
 
 
     @Override
-    public ChallengeResponse addOneChallenge(Admin userDetails, ChallengeAddRequest request) {
+    public ChallengeResponse addOneChallenge(Customer customer, ChallengeAddRequest request) {
 
         Challenge challenge = challengeMapper.toEntity(request);
-        challenge.setAdmin(userDetails);
+        challenge.setCustomer(
+                customer);
 
         Challenge saved = challengeRepository.save(challenge);
 
@@ -62,7 +62,7 @@ public class ManageChallengeServiceImpl implements ManageChallengeService {
     public Challenge findChallengeWithOwner(int challengeId, int userId) throws NotYourOwnException {
         Challenge challenge = challengeRepository.findOneById(challengeId).orElseThrow(() -> new NullPointerException("Challenge not found"));
 
-        if (challenge.getAdmin().getId() == userId) {
+        if (challenge.getCustomer().getId() == userId) {
             return challenge;
         } else {
             throw new NotYourOwnException("Challenge not own");

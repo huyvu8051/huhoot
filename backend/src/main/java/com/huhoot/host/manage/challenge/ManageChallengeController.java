@@ -2,15 +2,13 @@ package com.huhoot.host.manage.challenge;
 
 import com.huhoot.dto.ChallengeResponse;
 import com.huhoot.exception.NotYourOwnException;
-import com.huhoot.functional.impl.CheckOwnerChallenge;
-import com.huhoot.model.Admin;
 import com.huhoot.model.Challenge;
+import com.huhoot.model.Customer;
 import com.huhoot.vue.vdatatable.paging.PageResponse;
 import com.huhoot.vue.vdatatable.paging.VDataTablePagingConverter;
 import com.huhoot.vue.vdatatable.paging.VDataTablePagingRequest;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.annotations.Cache;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -34,30 +32,27 @@ public class ManageChallengeController {
     @GetMapping("/challenge")
     public PageResponse<ChallengeResponse> findAll(VDataTablePagingRequest request) {
 
-        Admin userDetails = (Admin) SecurityContextHolder.getContext().getAuthentication()
+        Customer customer = (Customer) SecurityContextHolder.getContext().getAuthentication()
                 .getPrincipal();
 
         Pageable pageable = vDataTablePagingConverter.toPageable(request);
 
-        return manageChallengeService.findAllOwnChallenge(userDetails.getId(), pageable);
+        return manageChallengeService.findAllOwnChallenge(customer.getId(), pageable);
     }
 
 
     @PostMapping("/challenge")
     public ResponseEntity<ChallengeResponse> add(@Valid @RequestBody ChallengeAddRequest request) throws IOException {
 
-        Admin userDetails = (Admin) SecurityContextHolder.getContext().getAuthentication()
+        Customer customer = (Customer) SecurityContextHolder.getContext().getAuthentication()
                 .getPrincipal();
 
-        return ResponseEntity.ok(manageChallengeService.addOneChallenge(userDetails, request));
+        return ResponseEntity.ok(manageChallengeService.addOneChallenge(customer, request));
 
     }
 
     @PatchMapping("/challenge")
     public void update(@Valid @RequestBody ChallengeUpdateRequest request) throws NotYourOwnException, NullPointerException {
-        Admin userDetails = (Admin) SecurityContextHolder.getContext().getAuthentication()
-                .getPrincipal();
-
 
         Challenge c = manageChallengeService.findChallenge(request.getId());
 

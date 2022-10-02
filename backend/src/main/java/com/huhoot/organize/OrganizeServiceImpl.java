@@ -12,7 +12,6 @@ import com.huhoot.enums.ChallengeStatus;
 import com.huhoot.exception.ChallengeException;
 import com.huhoot.exception.NoClientInBroadcastOperations;
 import com.huhoot.host.manage.challenge.ChallengeMapper;
-import com.huhoot.host.manage.studentInChallenge.StudentInChallengeResponse;
 import com.huhoot.model.*;
 import com.huhoot.repository.*;
 import com.huhoot.socket.HostRegisterSuccess;
@@ -47,7 +46,7 @@ public class OrganizeServiceImpl implements OrganizeService {
 
 
     @Override
-    public List<StudentInChallengeResponse> getAllStudentInChallengeIsLogin(Admin userDetails, int challengeId) {
+    public List<StudentInChallengeResponse> getAllStudentInChallengeIsLogin(Customer userDetails, int challengeId) {
         return studentInChallengeRepository.findAllStudentIsLogin(challengeId, userDetails.getId());
     }
 
@@ -84,9 +83,6 @@ public class OrganizeServiceImpl implements OrganizeService {
         long now = System.currentTimeMillis();
 
 
-
-
-
         Challenge challenge = question.getChallenge();
 
         if (question.getTimeout() != null & question.getTimeout() > now) {
@@ -115,10 +111,7 @@ public class OrganizeServiceImpl implements OrganizeService {
         long now = System.currentTimeMillis();
 
 
-
-
-
-        Question question = questRepo.findOneById(currentPublishedExam.getQuestion().getId()).orElseThrow(()-> new NullPointerException("No question"));
+        Question question = questRepo.findOneById(currentPublishedExam.getQuestion().getId()).orElseThrow(() -> new NullPointerException("No question"));
 
         List<Integer> answerResult = answerRepository.findAllCorrectAnswerIds(currentPublishedExam.getQuestion().getId());
 
@@ -144,7 +137,7 @@ public class OrganizeServiceImpl implements OrganizeService {
     /**
      * @param challengeId {@link Challenge} id
      * @param pageable    {@link Pageable}
-     * @return List of top 20 student have best total challenge score
+     * @return List of top 20 customer have best total challenge score
      */
     @Override
     public PageResponse<StudentScoreResponse> getTopStudent(int challengeId, Pageable pageable) {
@@ -174,19 +167,19 @@ public class OrganizeServiceImpl implements OrganizeService {
 
 
     /**
-     * @param studentIds  List of {@link com.huhoot.model.Student} ids
+     * @param studentIds  List of {@link Customer} ids
      * @param challengeId {@link Challenge} id
-     * @param adminId     {@link Admin} id
+     * @param adminId     {@link Customer} id
      */
     @Override
     public void kickStudent(List<Integer> studentIds, int challengeId, int adminId) {
-        List<StudentInChallenge> studentInChallenges = studentInChallengeRepository.findAllByStudentIdInAndChallengeIdAndAdminId(studentIds, challengeId, adminId);
+        List<Participant> participants = studentInChallengeRepository.findAllByStudentIdInAndChallengeIdAndAdminId(studentIds, challengeId, adminId);
 
 
-        for (StudentInChallenge sic : studentInChallenges) {
+        for (Participant sic : participants) {
             try {
                 sic.setKicked(true);
-                SocketIOClient client = socketIOServer.getClient(sic.getStudent().getSocketId());
+                SocketIOClient client = socketIOServer.getClient(sic.getCustomer().getSocketId());
                 client.sendEvent("kickStudent");
                 client.disconnect();
             } catch (Exception err) {
@@ -196,7 +189,7 @@ public class OrganizeServiceImpl implements OrganizeService {
         }
 
 
-        studentInChallengeRepository.saveAll(studentInChallenges);
+        studentInChallengeRepository.saveAll(participants);
 
     }
 
@@ -300,7 +293,7 @@ public class OrganizeServiceImpl implements OrganizeService {
 
 
     @Override
-    public void openChallenge(Admin userDetails, int challengeId) throws Exception {
+    public void openChallenge(Customer userDetails, int challengeId) throws Exception {
         Optional<Challenge> optional = challengeRepository.findOneById(challengeId);
         Challenge challenge = optional.orElseThrow(() -> new NullPointerException("Challenge not found"));
 
@@ -315,19 +308,18 @@ public class OrganizeServiceImpl implements OrganizeService {
         challengeRepository.updateChallengeStatusById(ChallengeStatus.WAITING, challengeId);
 
 
-
     }
 
 
-        private void createAllStudentAnswerInChallenge(Challenge challenge) throws Exception {
+    private void createAllStudentAnswerInChallenge(Challenge challenge) throws Exception {
 
 
-        List<Student> students = studentRepository.findAllStudentInChallenge(challenge.getId());
+        List<Customer> customers = studentRepository.findAllStudentInChallenge(challenge.getId());
 
         List<Question> questions = questRepo.findAllByChallengeId(challenge.getId());
 
-        if (students.size() == 0 || questions.size() == 0)
-            throw new ChallengeException("No student or question found in challenge id = " + challenge.getId());
+        if (customers.size() == 0 || questions.size() == 0)
+            throw new ChallengeException("No customer or question found in challenge id = " + challenge.getId());
 
         List<StudentAnswer> studentAnswers = new ArrayList<>();
 
@@ -338,11 +330,11 @@ public class OrganizeServiceImpl implements OrganizeService {
             validateQuestion(quest, answers);
 
             for (Answer ans : answers) {
-                for (Student stu : students) {
+                for (Customer stu : customers) {
 
-                    StudentAnswerId id = StudentAnswerId.builder().student(stu).answer(ans).challenge(challenge).question(quest).build();
+                    StudentAnswerId id = StudentAnswerId.builder().customer(stu).answer(ans).challenge(challenge).question(quest).build();
 
-                    studentAnswers.add(StudentAnswer.builder().primaryKey(id).score(0d).isCorrect(null).answerDate(null).build());
+                    studentAnswers.add(StudentAnswer.builder().key(id).score(0d).isCorrect(null).answerDate(null).build());
 
                 }
             }

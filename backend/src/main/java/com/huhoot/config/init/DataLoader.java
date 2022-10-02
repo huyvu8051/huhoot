@@ -25,7 +25,6 @@ public class DataLoader implements ApplicationRunner {
 
     private final PasswordEncoder passwordEncoder;
     private final StudentRepository studentRepository;
-    private final AdminRepository adminRepository;
     private final ChallengeRepository challengeRepository;
     private final QuestionRepository questionRepository;
     private final StudentInChallengeRepository studentChallengeRepository;
@@ -47,144 +46,10 @@ public class DataLoader implements ApplicationRunner {
         // start time
         long t0 = System.nanoTime();
 
-        Optional<Admin> op = adminRepository.findOneByUsername("admin");
-
-        if (!op.isPresent()) {
 
 
-            /*Admin adm = Admin.builder()
-                    .username("admin")
-                    .password(passwordEncoder.encode("password"))
-                    .role(Role.ADMIN)
-                    .createdDate(date)
-                    .createdBy("BobVu")
-                    .modifiedDate(date)
-                    .modifiedBy("BobVu")
-                    .build();
-
-            adminRepository.save(adm);*/
 
 
-            Admin admin = new Admin("admin", passwordEncoder.encode("password"));
-            admin.setRole(Role.ADMIN);
-            admin.setCreatedDate(date);
-            admin.setCreatedBy("System");
-            admin.setModifiedDate(date);
-            admin.setModifiedBy("System");
-
-            adminRepository.save(admin);
-
-            for (int i = 0; i < 1; i++) {
-                Admin admin1 = new Admin("admin" + i, passwordEncoder.encode("password"));
-
-                admin1.setRole(Role.HOST);
-                admin1.setCreatedDate(date);
-                admin1.setCreatedBy("BobVu");
-                admin1.setModifiedDate(date);
-                admin1.setModifiedBy("Nobody");
-
-                Admin host = adminRepository.save(admin1);
-
-
-                for (int j = 0; j < 3; j++) {
-                    Challenge challenge = new Challenge();
-
-
-                    challenge.setTitle(faker.lorem().paragraph());
-                    challenge.setChallengeStatus(ChallengeStatus.WAITING);
-
-                    challenge.setCoverImage(faker.internet().image());
-                    challenge.setRandomQuest(true);
-                    challenge.setRandomAnswer(true);
-                    challenge.setAdmin(host);
-                    challenge.setCreatedDate(date);
-                    challenge.setCreatedBy("BobVu");
-                    challenge.setModifiedDate(date);
-                    challenge.setModifiedBy("Nobody");
-
-                    Challenge chall = challengeRepository.save(challenge);
-
-
-                    for (int x = 0; x < 7; x++) {
-                        Student student1 = new Student("student" + i + j + x, faker.name().fullName(), passwordEncoder.encode("password"));
-                        student1.setCreatedDate(date);
-                        student1.setCreatedBy("BobVu");
-                        student1.setModifiedDate(date);
-                        student1.setModifiedBy("Nobody");
-                        Student student = studentRepository.save(student1);
-
-                        StudentInChallenge studentChallenge = new StudentInChallenge();
-                        studentChallenge.setStudent(student);
-                        studentChallenge.setChallenge(chall);
-                        studentChallenge.setCreatedDate(date);
-                        studentChallenge.setCreatedBy("BobVu");
-                        studentChallenge.setModifiedDate(date);
-                        studentChallenge.setModifiedBy("Nobody");
-                        studentChallenge.setNonDeleted(true);
-
-                        // test, must change to false
-                        studentChallenge.setLogin(true);
-
-                        studentChallengeRepository.save(studentChallenge);
-
-
-                        int answerTime = 10 + random.nextInt(25);
-
-                        Question question
-                                = new Question();
-                        question.setOrdinalNumber(x);
-                        question.setQuestionContent(faker.lorem().paragraph());
-                        question.setQuestionImage(getRandomImgUrl());
-                        question.setAnswerTimeLimit(answerTime);
-                        question.setPoint(Points.STANDARD);
-                        question.setAnswerOption(AnswerOption.MULTI_SELECT);
-
-                        question.setChallenge(chall);
-
-                        byte[] key = encryptUtils.generateRandomKey().getEncoded();
-                        question.setEncryptKey(key);
-
-                        question.setCreatedDate(date);
-                        question.setCreatedBy("BobVu");
-                        question.setModifiedDate(date);
-                        question.setModifiedBy("Nobody");
-
-                        Question quest = questionRepository.save(question);
-
-                        List<Answer> answers = new ArrayList<>();
-
-                        int i1 = random.nextInt(6);
-
-                        for (int a = 0; a < i1 + 1; a++) {
-                            int randAnswerCorrect = random.nextInt(10);
-                            boolean corr = (randAnswerCorrect % 3) == 0;
-                            Answer answer = new Answer();
-                            answer.setOrdinalNumber(a);
-
-
-                            answer.setAnswerContent(faker.lorem().paragraph() + " " + corr);
-                            answer.setCorrect(corr);
-                            answer.setQuestion(quest);
-
-                            answer.setCreatedDate(date);
-                            answer.setCreatedBy("BobVu");
-                            answer.setModifiedDate(date);
-                            answer.setModifiedBy("Nobody");
-
-                            answers.add(answer);
-                        }
-
-                        if (answers.stream().noneMatch(e -> e.isCorrect())) answers.get(0).setCorrect(true);
-
-                        answerRepository.saveAll(answers);
-
-                    }
-
-                }
-            }
-
-
-        }
     }
 
     private String getRandomImgUrl() {

@@ -19,12 +19,12 @@ public interface StudentAnswerRepository extends JpaRepository<StudentAnswer, In
 
     /**
      * @param challengeId challenge id
-     * @param studentId   student id
-     * @return total point of student answer
+     * @param studentId   customer id
+     * @return total point of customer answer
      */
     @Query("SELECT COALESCE(SUM(m.score), 0) " +
             "FROM StudentAnswer m " +
-            "WHERE m.primaryKey.challenge.id = :challengeId and m.primaryKey.student.id = :studentId")
+            "WHERE m.key.challenge.id = :challengeId and m.key.customer.id = :studentId")
     double getTotalPointInChallenge(@Param("challengeId")int challengeId,
                                  @Param("studentId") int studentId);
 
@@ -32,13 +32,13 @@ public interface StudentAnswerRepository extends JpaRepository<StudentAnswer, In
     /**
      * @param challengeId challenge id
      * @param pageable    pageable
-     * @return list of student id, fullName, score <br/>
+     * @return list of customer id, fullName, score <br/>
      * Not contain <b>rank</b>
      */
-    @Query("SELECT new com.huhoot.organize.StudentScoreResponse(m.primaryKey.student.id, SUM(m.score), m.primaryKey.student.fullName, m.primaryKey.student.username)  " +
+    @Query("SELECT new com.huhoot.organize.StudentScoreResponse(m.key.customer.id, SUM(m.score), m.key.customer.fullName, m.key.customer.username)  " +
             "FROM StudentAnswer m " +
-            "WHERE m.primaryKey.challenge.id = :challengeId " +
-            "GROUP BY m.primaryKey.student.id, m.primaryKey.student.fullName, m.primaryKey.student.username " +
+            "WHERE m.key.challenge.id = :challengeId " +
+            "GROUP BY m.key.customer.id, m.key.customer.fullName, m.key.customer.username " +
             "ORDER BY SUM(m.score) DESC")
     Page<StudentScoreResponse> findTopStudent(@Param("challengeId")int challengeId,
                                               Pageable pageable);
@@ -49,20 +49,20 @@ public interface StudentAnswerRepository extends JpaRepository<StudentAnswer, In
 
 
     /**
-     * A method for update student answer
+     * A method for update customer answer
      * use update instead insert because of performance
      *
      * @param point            point
      * @param isAnswersCorrect is the answer is correct or not
      * @param now              current timestamp
      * @param answerId         answer id
-     * @param studentId        student id
+     * @param studentId        customer id
      */
     @Modifying
     @Transactional
     @Query("UPDATE StudentAnswer s " +
             "SET s.score = :point, s.isCorrect = :isAnswersCorrect, s.answerDate = :now " +
-            "WHERE s.primaryKey.answer.id = :answerId AND s.primaryKey.student.id = :studentId")
+            "WHERE s.key.answer.id = :answerId AND s.key.customer.id = :studentId")
     void updateAnswer(@Param("point")double point,
                       @Param("isAnswersCorrect") boolean isAnswersCorrect,
                       @Param("now") Timestamp now,
@@ -73,15 +73,15 @@ public interface StudentAnswerRepository extends JpaRepository<StudentAnswer, In
     @Modifying
     @Query("UPDATE StudentAnswer q " +
             "SET q.score = :point, q.isCorrect = :isCorrect, q.answerDate = :answerDate " +
-            "WHERE q.primaryKey.answer.id IN (:ids) AND q.primaryKey.student.id = :studentId")
+            "WHERE q.key.answer.id IN (:ids) AND q.key.customer.id = :studentId")
     void updateAnswerPoint(@Param("ids") List<Integer> ids,@Param("studentId") int studentId,@Param("point") double point,@Param("isCorrect") boolean isCorrect,@Param("answerDate") long answerDate);
 
-    @Query("SELECT COUNT(DISTINCT a.primaryKey.student.id) FROM StudentAnswer a WHERE a.primaryKey.question.id = :questionId AND a.isCorrect = :isCorrect GROUP BY a.primaryKey.student.id")
+    @Query("SELECT COUNT(DISTINCT a.key.customer.id) FROM StudentAnswer a WHERE a.key.question.id = :questionId AND a.isCorrect = :isCorrect GROUP BY a.key.customer.id")
     Optional<Integer> getTotalStudentAnswerByQuestIdAndIsCorrect(@Param("questionId") int questionId, @Param("isCorrect") Boolean isCorrect);
 
-    @Query("SELECT new com.huhoot.dto.StudentAnswerResult(a.score, a.isCorrect, a.answerDate,a.primaryKey.question.id, a.primaryKey.answer) " +
+    @Query("SELECT new com.huhoot.dto.StudentAnswerResult(a.score, a.isCorrect, a.answerDate,a.key.question.id, a.key.answer) " +
             "FROM StudentAnswer a " +
-            "WHERE a.primaryKey.question.id in :questionIds AND a.primaryKey.student.id = :studentId")
+            "WHERE a.key.question.id in :questionIds AND a.key.customer.id = :studentId")
     List<StudentAnswerResult> findAllStudentAnswerResult(@Param("questionIds") List<Integer> questionIds, @Param("studentId")int studentId);
 
 }

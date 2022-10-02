@@ -6,20 +6,19 @@ import lombok.experimental.SuperBuilder;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
 
 @Entity
 @AssociationOverrides({
-        @AssociationOverride(name = "primaryKey.student", joinColumns = @JoinColumn(name = "student_id")),
-        @AssociationOverride(name = "primaryKey.question", joinColumns = @JoinColumn(name = "question_id")),
-        @AssociationOverride(name = "primaryKey.answer", joinColumns = @JoinColumn(name = "answer_id")),
-        @AssociationOverride(name = "primaryKey.challenge", joinColumns = @JoinColumn(name = "challenge_id"))})
+        @AssociationOverride(name = "key.customer", joinColumns = @JoinColumn(name = "student_id")),
+        @AssociationOverride(name = "key.question", joinColumns = @JoinColumn(name = "question_id")),
+        @AssociationOverride(name = "key.answer", joinColumns = @JoinColumn(name = "answer_id")),
+        @AssociationOverride(name = "key.challenge", joinColumns = @JoinColumn(name = "challenge_id"))})
 @EntityListeners({AuditingEntityListener.class})
 @SuperBuilder
 public class StudentAnswer extends Auditable {
     @EmbeddedId
     @Getter
-    private StudentAnswerId primaryKey = new StudentAnswerId();
+    private StudentAnswerId key = new StudentAnswerId();
 
     @Getter
     @Setter
@@ -39,40 +38,40 @@ public class StudentAnswer extends Auditable {
 
 
     @Transient
-    public Student getStudent() {
-        return getPrimaryKey().getStudent();
+    public Customer getStudent() {
+        return getKey().getCustomer();
     }
 
-    public void setStudent(Student student) {
-        getPrimaryKey().setStudent(student);
+    public void setStudent(Customer customer) {
+        getKey().setCustomer(customer);
     }
 
     public void setAnswer(Answer ans) {
-        primaryKey.setAnswer(ans);
+        key.setAnswer(ans);
     }
 
     public void setChallenge(Challenge chal) {
-        primaryKey.setChallenge(chal);
+        key.setChallenge(chal);
     }
 
     @Transient
     public Question getQuestion() {
-        return getPrimaryKey().getQuestion();
+        return getKey().getQuestion();
     }
 
     public void setQuestion(Question question) {
-        getPrimaryKey().setQuestion(question);
+        getKey().setQuestion(question);
     }
 
 
     @Transient
     public Answer getAnswer() {
-        return primaryKey.getAnswer();
+        return key.getAnswer();
     }
 
     @Transient
     public Challenge getChallenge(){
-        return primaryKey.getChallenge();
+        return key.getChallenge();
     }
 
 
