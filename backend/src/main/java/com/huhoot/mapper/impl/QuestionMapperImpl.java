@@ -32,19 +32,13 @@ public class QuestionMapperImpl implements QuestionMapper {
             entity.setOrdinalNumber(dto.getOrdinalNumber());
         }
         if (dto.getQuestionContent() != null) {
-            entity.setQuestionContent(dto.getQuestionContent());
+            entity.setContent(dto.getQuestionContent());
         }
         if (dto.getQuestionImage() != null) {
-            entity.setQuestionImage(dto.getQuestionImage());
+            entity.setImage(dto.getQuestionImage());
         }
         if (dto.getAnswerTimeLimit() != null) {
             entity.setAnswerTimeLimit(dto.getAnswerTimeLimit());
-        }
-        if (dto.getPoint() != null) {
-            entity.setPoint(dto.getPoint());
-        }
-        if (dto.getAnswerOption() != null) {
-            entity.setAnswerOption(dto.getAnswerOption());
         }
     }
 
@@ -58,11 +52,9 @@ public class QuestionMapperImpl implements QuestionMapper {
 
         questionResponse.setId(entity.getId());
         questionResponse.setOrdinalNumber(entity.getOrdinalNumber());
-        questionResponse.setQuestionContent(entity.getQuestionContent());
-        questionResponse.setQuestionImage(entity.getQuestionImage());
+        questionResponse.setQuestionContent(entity.getContent());
+        questionResponse.setQuestionImage(entity.getImage());
         questionResponse.setAnswerTimeLimit(entity.getAnswerTimeLimit());
-        questionResponse.setPoint(entity.getPoint());
-        questionResponse.setAnswerOption(entity.getAnswerOption());
         if (entity.getAskDate() != null) {
             questionResponse.setAskDate(entity.getAskDate());
         }

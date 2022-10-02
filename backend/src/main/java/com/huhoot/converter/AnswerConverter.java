@@ -8,8 +8,7 @@ public class AnswerConverter {
 
     public static Answer toEntity(AnswerAddRequest request) {
         Answer answer = new Answer();
-        answer.setOrdinalNumber(request.getOrdinalNumber());
-        answer.setAnswerContent(request.getAnswerContent());
+        answer.setContent(request.getAnswerContent());
         answer.setCorrect(request.isCorrect());
         return answer;
     }

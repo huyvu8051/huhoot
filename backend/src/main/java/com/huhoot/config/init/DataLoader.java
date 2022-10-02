@@ -1,13 +1,15 @@
 package com.huhoot.config.init;
 
 import com.github.javafaker.Faker;
-import com.huhoot.encrypt.EncryptUtils;
-import com.huhoot.enums.AnswerOption;
 import com.huhoot.enums.ChallengeStatus;
-import com.huhoot.enums.Points;
-import com.huhoot.enums.Role;
-import com.huhoot.model.*;
-import com.huhoot.repository.*;
+import com.huhoot.model.Answer;
+import com.huhoot.model.Challenge;
+import com.huhoot.model.Customer;
+import com.huhoot.model.Question;
+import com.huhoot.repository.AnswerRepository;
+import com.huhoot.repository.ChallengeRepository;
+import com.huhoot.repository.CustomerRepository;
+import com.huhoot.repository.QuestionRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationArguments;
@@ -15,7 +17,11 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Random;
+import java.util.stream.IntStream;
 
 
 @Component
@@ -23,17 +29,15 @@ import java.util.*;
 @Slf4j
 public class DataLoader implements ApplicationRunner {
 
-    private final PasswordEncoder passwordEncoder;
-    private final StudentRepository studentRepository;
+
+    private final CustomerRepository customerRepository;
     private final ChallengeRepository challengeRepository;
-    private final QuestionRepository questionRepository;
-    private final StudentInChallengeRepository studentChallengeRepository;
-    private final AnswerRepository answerRepository;
-    private final EncryptUtils encryptUtils;
+    private final PasswordEncoder pwEnc;
+    private final QuestionRepository questRepo;
+    private final AnswerRepository ansRepo;
 
 
     public void run(ApplicationArguments args) {
-
 
 
         Random random = new Random();
@@ -47,7 +51,35 @@ public class DataLoader implements ApplicationRunner {
         long t0 = System.nanoTime();
 
 
+        List<Customer> customers = customerRepository.saveAll(IntStream.range(0, 25).mapToObj(index -> Customer.builder().username("user" + index).fullName(faker.name().fullName()).password(pwEnc.encode("pw")).isNonLocked(true).build()).toList());
 
+        List<Challenge> challenges = challengeRepository.saveAll(IntStream.range(0,7).mapToObj(index -> Challenge.builder().title(faker.lorem().paragraph()).customer(customers.get(0)).challengeStatus(ChallengeStatus.BUILDING).isNonDeleted(true).build()).toList());
+
+        List<Question> quests = new ArrayList<>();
+
+        challenges.forEach(c-> {
+            List<Question> questions = IntStream.range(0, 20).mapToObj(index -> Question.builder()
+                    .ordinalNumber(index)
+                    .challenge(c)
+                    .content(faker.lorem().paragraph())
+                    .image(getRandomImgUrl())
+                    .answerTimeLimit(7)
+                    .isNonDeleted(true)
+                    .build()).toList();
+            quests.addAll(questions);
+        });
+
+
+        List<Question> questions = questRepo.saveAll(quests);
+
+
+        List<Answer> answers = new ArrayList<>();
+
+        questions.forEach(e->{
+            answers.addAll(IntStream.range(0,4).mapToObj(index->Answer.builder().content(faker.lorem().paragraph()).isNonDeleted(true).question(e).isCorrect(faker.number().numberBetween(1,4) == index).build()).toList());
+        });
+
+        ansRepo.saveAll(answers);
 
 
     }

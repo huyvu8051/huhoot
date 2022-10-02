@@ -1,6 +1,7 @@
 package com.huhoot.model;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import org.hibernate.annotations.Where;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -9,6 +10,7 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Builder
 @Entity
 @Data
 @AllArgsConstructor
@@ -20,10 +22,8 @@ public class Answer extends Auditable{
 	@GeneratedValue
 	private int id;
 
-	private int ordinalNumber;
-
 	@Column(columnDefinition = "nvarchar(255)")
-	private String answerContent;
+	private String content;
 
 	private boolean isCorrect;
 
@@ -33,7 +33,7 @@ public class Answer extends Auditable{
 	@JoinColumn(name = "question_id")
 	private Question question;
 
-	@OneToMany(mappedBy = "primaryKey.answer", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "key.answer", cascade = CascadeType.ALL)
 	private List<StudentAnswer> studentAnswers = new ArrayList<>();
 
 	public Answer (){

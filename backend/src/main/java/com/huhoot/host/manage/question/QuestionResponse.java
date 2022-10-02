@@ -5,9 +5,6 @@ import com.huhoot.enums.AnswerOption;
 import com.huhoot.enums.Points;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import java.util.Date;
 
 @Data
 @AllArgsConstructor
@@ -27,7 +24,7 @@ public class QuestionResponse extends AuditableDto {
     }
 
     public QuestionResponse(int id, int ordinalNumber, String questionContent, String questionImage,
-                            int answerTimeLimit, Points point, AnswerOption answerOption, Long askDate,
+                            int answerTimeLimit, Long askDate,
                             boolean isNonDeleted, Long createdDate, String createdBy, Long modifiedDate, String modifiedBy) {
         super(createdDate, createdBy, modifiedDate, modifiedBy);
         this.id = id;
@@ -35,9 +32,7 @@ public class QuestionResponse extends AuditableDto {
         this.questionContent = questionContent;
         this.questionImage = questionImage;
         this.answerTimeLimit = answerTimeLimit;
-        this.point = point;
-        this.answerOption = answerOption;
-        if(askDate != null){
+        if (askDate != null) {
             this.askDate = askDate;
         }
         this.isNonDeleted = isNonDeleted;

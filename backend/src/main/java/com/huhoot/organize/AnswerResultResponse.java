@@ -9,12 +9,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AnswerResultResponse {
     private int id;
-    private int ordinalNumber;
     private String content;
 
-    public AnswerResultResponse(int id, int ordinalNumber, String content) {
+    public AnswerResultResponse(int id, String content) {
         this.id = id;
-        this.ordinalNumber = ordinalNumber;
         this.content = content;
     }
 }

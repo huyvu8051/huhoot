@@ -1,6 +1,5 @@
 package com.huhoot.organize;
 
-import com.corundumstudio.socketio.BroadcastOperations;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.huhoot.config.security.JwtUtil;
@@ -10,11 +9,9 @@ import com.huhoot.encrypt.EncryptUtils;
 import com.huhoot.enums.AnswerOption;
 import com.huhoot.enums.ChallengeStatus;
 import com.huhoot.exception.ChallengeException;
-import com.huhoot.exception.NoClientInBroadcastOperations;
 import com.huhoot.host.manage.challenge.ChallengeMapper;
 import com.huhoot.model.*;
 import com.huhoot.repository.*;
-import com.huhoot.socket.HostRegisterSuccess;
 import com.huhoot.vue.vdatatable.paging.PageResponse;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +20,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,7 +34,7 @@ public class OrganizeServiceImpl implements OrganizeService {
     private final SocketIOServer socketIOServer;
     private final ListConverter listConverter;
 
-    private final StudentRepository studentRepository;
+    private final CustomerRepository studentRepository;
     private final StudentInChallengeRepository studentChallengeRepository;
     private final JwtUtil jwtUtil;
     private final EncryptUtils encryptUtils;
@@ -202,7 +198,7 @@ public class OrganizeServiceImpl implements OrganizeService {
         int countQuestion = questRepo.countQuestionInChallenge(challengeId);
         int questionOrder = questRepo.findNumberOfPublishedQuestion(challengeId) + 1;
 
-        PublishQuestion publishQuest = PublishQuestion.builder().id(question.getId()).ordinalNumber(question.getOrdinalNumber()).questionContent(question.getQuestionContent()).questionImage(question.getQuestionImage()).answerTimeLimit(question.getAnswerTimeLimit()).point(question.getPoint()).answerOption(question.getAnswerOption()).challengeId(challengeId).totalQuestion(countQuestion).questionOrder(questionOrder).theLastQuestion(countQuestion == questionOrder).build();
+        PublishQuestion publishQuest = PublishQuestion.builder().id(question.getId()).ordinalNumber(question.getOrdinalNumber()).questionContent(question.getContent()).questionImage(question.getImage()).answerTimeLimit(question.getAnswerTimeLimit()).challengeId(challengeId).totalQuestion(countQuestion).questionOrder(questionOrder).theLastQuestion(countQuestion == questionOrder).build();
 
         List<AnswerResultResponse> publishAnswers = answerRepository.findAllPublishAnswer(question.getId());
 
@@ -248,7 +244,7 @@ public class OrganizeServiceImpl implements OrganizeService {
         int countQuestion = questRepo.countQuestionInChallenge(challengeId);
         int questionOrder = questRepo.findNumberOfPublishedQuestion(challengeId) + 1;
 
-        PublishQuestion publishQuest = PublishQuestion.builder().id(currQuestion.getId()).ordinalNumber(currQuestion.getOrdinalNumber()).askDate(currQuestion.getAskDate()).questionContent(currQuestion.getQuestionContent()).questionImage(currQuestion.getQuestionImage()).answerTimeLimit(currQuestion.getAnswerTimeLimit()).point(currQuestion.getPoint()).answerOption(currQuestion.getAnswerOption()).challengeId(challengeId).totalQuestion(countQuestion).questionOrder(questionOrder).theLastQuestion(countQuestion == questionOrder).build();
+        PublishQuestion publishQuest = PublishQuestion.builder().id(currQuestion.getId()).ordinalNumber(currQuestion.getOrdinalNumber()).askDate(currQuestion.getAskDate()).questionContent(currQuestion.getContent()).questionImage(currQuestion.getImage()).answerTimeLimit(currQuestion.getAnswerTimeLimit()).challengeId(challengeId).totalQuestion(countQuestion).questionOrder(questionOrder).theLastQuestion(countQuestion == questionOrder).build();
 
         List<PublishAnswer> publishAnswers2 = answerRepository.findAllAnswerByQuestionIdAndAdminId(currQuestion.getId());
 
@@ -260,31 +256,6 @@ public class OrganizeServiceImpl implements OrganizeService {
     }
 
 
-    public void findAnyClientAndEnableAutoOrganize(int challengeId) throws NoClientInBroadcastOperations {
-        BroadcastOperations broadcastOperations = socketIOServer.getRoomOperations(String.valueOf(challengeId));
-        broadcastOperations.sendEvent("disableAutoOrganize");
-        Collection<SocketIOClient> clients = broadcastOperations.getClients();
-        SocketIOClient client = clients.stream().findFirst().orElseThrow(() -> new NoClientInBroadcastOperations("no client left in this challenge"));
-        client.sendEvent("enableAutoOrganize", this.getCurrentPublishedExam(challengeId));
-
-        int id = client.get("id");
-        challengeRepository.updateUserAutoOrganizeId(challengeId, id);
-        challengeRepository.updateAutoOrganizeStatus(challengeId, true);
-    }
-
-    public void disableAutoOrganize(int challengeId) {
-        BroadcastOperations broadcastOperations = socketIOServer.getRoomOperations(String.valueOf(challengeId));
-        broadcastOperations.sendEvent("disableAutoOrganize");
-
-        challengeRepository.updateUserAutoOrganizeId(challengeId, null);
-        challengeRepository.updateAutoOrganizeStatus(challengeId, false);
-    }
-
-    @Override
-    public void updateChallengeStatusToClient(int challengeId) {
-        BroadcastOperations broadcastOperations = socketIOServer.getRoomOperations(String.valueOf(challengeId));
-        broadcastOperations.sendEvent("updateChallengeStatus", HostRegisterSuccess.builder().totalStudentInChallenge(0).currentExam(this.getCurrentPublishedExam(challengeId)).build());
-    }
 
     @Override
     public PageResponse<StudentInChallengeResponse> getAllStudentInChallengeIsLogin(int challengeId) {
@@ -354,12 +325,7 @@ public class OrganizeServiceImpl implements OrganizeService {
             throw new ChallengeException("No any answer correct for question id = " + quest.getId());
         }
 
-        if (quest.getAnswerOption().equals(AnswerOption.SINGLE_SELECT)) {
-            long answerCount = answers.stream().filter(Answer::isCorrect).count();
-            if (answerCount > 1)
-                throw new ChallengeException("SINGLE_SELECT: Ony one answer is correct for question id = " + quest.getId());
 
-        }
     }
 
 

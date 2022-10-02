@@ -34,7 +34,7 @@ public class ParticipateServiceImpl implements ParticipateService {
 
     private final StudentInChallengeRepository studentInChallengeRepository;
 
-    private final StudentRepository studentRepository;
+    private final CustomerRepository studentRepository;
 
 
     private final StudentAnswerRepository studentAnswerRepository;
@@ -100,7 +100,7 @@ public class ParticipateServiceImpl implements ParticipateService {
         int countQuestion = questionRepository.countQuestionInChallenge(challengeId);
         int questionOrder = questionRepository.findNumberOfPublishedQuestion(challengeId) + 1;
 
-        PublishQuestion publishQuest = PublishQuestion.builder().id(currQuestion.getId()).ordinalNumber(currQuestion.getOrdinalNumber()).askDate(currQuestion.getAskDate()).timeout(currQuestion.getTimeout()).questionContent(currQuestion.getQuestionContent()).questionImage(currQuestion.getQuestionImage()).answerTimeLimit(currQuestion.getAnswerTimeLimit()).point(currQuestion.getPoint()).answerOption(currQuestion.getAnswerOption()).challengeId(challengeId).totalQuestion(countQuestion).questionOrder(questionOrder).theLastQuestion(countQuestion == questionOrder).build();
+        PublishQuestion publishQuest = PublishQuestion.builder().id(currQuestion.getId()).ordinalNumber(currQuestion.getOrdinalNumber()).askDate(currQuestion.getAskDate()).timeout(currQuestion.getTimeout()).questionContent(currQuestion.getContent()).questionImage(currQuestion.getImage()).answerTimeLimit(currQuestion.getAnswerTimeLimit()).challengeId(challengeId).totalQuestion(countQuestion).questionOrder(questionOrder).theLastQuestion(countQuestion == questionOrder).build();
 
         List<PublishAnswer> publishAnswers2 = answerRepository.findAllAnswerByQuestionIdAndAdminId(currQuestion.getId());
 
@@ -138,7 +138,7 @@ public class ParticipateServiceImpl implements ParticipateService {
             isAnswersCorrect = true;
             comboCount = encryptUtils.extractCombo(request.getComboToken(), customer.getUsername(), quest.getPublishedOrderNumber());
             comboCount++;
-            pointReceive = calculatePoint(quest.getAskDate(), nowLong, quest.getPoint().getValue(), quest.getAnswerTimeLimit(), comboCount);
+            pointReceive = calculatePoint(quest.getAskDate(), nowLong, quest.getAnswerTimeLimit(), comboCount);
 
         } else {
             // out of time limit
@@ -165,7 +165,7 @@ public class ParticipateServiceImpl implements ParticipateService {
     }
 
 
-    private double calculatePoint(long askDate, long now, int pointCoefficient, int answerTimeLimit, int combo) {
+    private double calculatePoint(long askDate, long now, int answerTimeLimit, int combo) {
 
         long timeLeft = askDate + (answerTimeLimit * 1000L) - now;
 
@@ -177,7 +177,7 @@ public class ParticipateServiceImpl implements ParticipateService {
 
         int defaultCorrectPoint = 500;
 
-        return (defaultCorrectPoint + (500 * timeLeftPercent)) * pointCoefficient + combo * 50;
+        return (defaultCorrectPoint + (500 * timeLeftPercent)) + combo * 50;
     }
 
 

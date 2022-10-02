@@ -1,6 +1,6 @@
 package com.huhoot.organize;
 
-import com.huhoot.host.manage.studentInChallenge.StudentInChallengeResponse;
+import com.huhoot.model.Customer;
 import com.huhoot.repository.QuestionRepository;
 import com.huhoot.vue.vdatatable.paging.PageResponse;
 import lombok.AllArgsConstructor;
@@ -21,10 +21,10 @@ public class OrganizeController {
 
     @GetMapping("/openChallenge")
     public void openChallenge(@RequestParam int challengeId) throws Exception {
-        Admin userDetails = (Admin) SecurityContextHolder.getContext().getAuthentication()
+        Customer userDetails = (Customer) SecurityContextHolder.getContext().getAuthentication()
                 .getPrincipal();
 
-       organizeService.openChallenge(userDetails, challengeId);
+        organizeService.openChallenge(userDetails, challengeId);
     }
 
     @GetMapping("/participant")
@@ -40,7 +40,7 @@ public class OrganizeController {
      */
     @GetMapping("/startChallenge")
     public void startChallenge(@RequestParam int challengeId) {
-        Admin userDetails = (Admin) SecurityContextHolder.getContext().getAuthentication()
+        Customer userDetails = (Customer) SecurityContextHolder.getContext().getAuthentication()
                 .getPrincipal();
 
         organizeService.startChallenge(challengeId, userDetails.getId());
@@ -83,7 +83,7 @@ public class OrganizeController {
      */
     @GetMapping("/endChallenge")
     public void endChallenge(@RequestParam int challengeId) throws NullPointerException {
-        Admin userDetails = (Admin) SecurityContextHolder.getContext().getAuthentication()
+        Customer userDetails = (Customer) SecurityContextHolder.getContext().getAuthentication()
                 .getPrincipal();
         organizeService.endChallenge(challengeId);
     }
@@ -96,22 +96,19 @@ public class OrganizeController {
      */
     @PostMapping("/kickStudent")
     public void kickStudent(@RequestBody KickRequest req) {
-        Admin userDetails = (Admin) SecurityContextHolder.getContext().getAuthentication()
+        Customer userDetails = (Customer) SecurityContextHolder.getContext().getAuthentication()
                 .getPrincipal();
         organizeService.kickStudent(req.getStudentIds(), req.getChallengeId(), userDetails.getId());
     }
 
     @GetMapping("/request")
-    public void publishNextQuestion(@RequestParam int challengeId){
+    public void publishNextQuestion(@RequestParam int challengeId) {
         try {
             organizeService.publishNextQuestion(challengeId);
         } catch (Exception e) {
             organizeService.endChallenge(challengeId);
         }
     }
-
-
-
 
 
 }

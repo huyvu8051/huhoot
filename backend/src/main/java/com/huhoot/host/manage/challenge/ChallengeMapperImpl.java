@@ -34,15 +34,7 @@ public class ChallengeMapperImpl implements ChallengeMapper {
         if (dto.getTitle() != null) {
             entity.setTitle(dto.getTitle());
         }
-        if (dto.getCoverImage() != null) {
-            entity.setCoverImage(dto.getCoverImage());
-        }
-        if (dto.getRandomAnswer() != null) {
-            entity.setRandomAnswer(dto.getRandomAnswer());
-        }
-        if (dto.getRandomQuest() != null) {
-            entity.setRandomQuest(dto.getRandomQuest());
-        }
+
         if (dto.getChallengeStatus() != null) {
             entity.setChallengeStatus(dto.getChallengeStatus());
         }
@@ -58,18 +50,9 @@ public class ChallengeMapperImpl implements ChallengeMapper {
 
         auditingMapper.setAudit(entity, challengeResponse);
 
-        challengeResponse.setOwner(entityAdminUsername(entity));
         challengeResponse.setId(entity.getId());
         challengeResponse.setTitle(entity.getTitle());
-        challengeResponse.setCoverImage(entity.getCoverImage());
-        challengeResponse.setRandomAnswer(entity.isRandomAnswer());
-        challengeResponse.setRandomQuest(entity.isRandomQuest());
         challengeResponse.setChallengeStatus(entity.getChallengeStatus());
-
-        challengeResponse.setUserAutoOrganizeId(entity.getUserAutoOrganizeId());
-        challengeResponse.setAutoOrganize(entity.isAutoOrganize());
-
-
 
         return challengeResponse;
     }
@@ -83,26 +66,9 @@ public class ChallengeMapperImpl implements ChallengeMapper {
         Challenge challenge = new Challenge();
 
         challenge.setTitle(dto.getTitle());
-        challenge.setCoverImage(dto.getCoverImage());
-        challenge.setRandomAnswer(dto.isRandomAnswer());
-        challenge.setRandomQuest(dto.isRandomQuest());
         challenge.setChallengeStatus(dto.getChallengeStatus());
 
         return challenge;
     }
 
-    private String entityAdminUsername(Challenge challenge) {
-        if (challenge == null) {
-            return null;
-        }
-        Admin admin = challenge.getAdmin();
-        if (admin == null) {
-            return null;
-        }
-        String username = admin.getUsername();
-        if (username == null) {
-            return null;
-        }
-        return username;
-    }
 }

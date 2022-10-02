@@ -17,7 +17,7 @@ public interface StudentInChallengeRepository extends JpaRepository<Participant,
 
     Page<Participant> findAllByKeyCustomerUsernameContainingIgnoreCaseAndKeyChallengeId(String studentUsername, int challengeId, Pageable pageable);
 
-    List<Participant> findAllByPrimaryKeyChallengeIdAndPrimaryKeyChallengeAdminId(int challengeId, int adminId);
+    List<Participant> findAllByKeyChallengeIdAndKeyChallengeCustomerId(int challengeId, int adminId);
 
     /**
      * @param studentIds  List of {@link Customer} ids
@@ -73,7 +73,7 @@ public interface StudentInChallengeRepository extends JpaRepository<Participant,
     int getTotalStudentInChallenge(@Param("challengeId") int challengeId);
 
 
-    @Query("SELECT new com.huhoot.dto.ChallengeResponse(n.key.challenge.id, n.key.challenge.title, n.key.challenge.coverImage, n.key.challenge.challengeStatus, n.key.challenge.customer.username, n.key.challenge.customer.socketId, n.key.challenge.createdDate, n.key.challenge.createdBy, " +
+    @Query("SELECT new com.huhoot.dto.ChallengeResponse(n.key.challenge.id, n.key.challenge.title,  n.key.challenge.challengeStatus, n.key.challenge.customer.username, n.key.challenge.customer.socketId, n.key.challenge.createdDate, n.key.challenge.createdBy, " +
             "n.key.challenge.modifiedDate, n.key.challenge.modifiedBy) " +
             "FROM Participant n " +
             "WHERE n.key.customer.username = :username")

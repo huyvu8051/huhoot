@@ -14,13 +14,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface StudentRepository extends JpaRepository<Customer, Integer> {
+public interface CustomerRepository extends JpaRepository<Customer, Integer> {
     Optional<Customer> findOneByUsername(String username);
 
-    Optional<Customer> findOneById(int id);
-
-
-    @Query("SELECT n.key.student " +
+    @Query("SELECT n.key.customer " +
             "FROM Participant n " +
             "WHERE n.key.challenge.id = :challengeId")
     List<Customer> findAllStudentInChallenge(@Param("challengeId") int challengeId);

@@ -2,7 +2,9 @@ package com.huhoot.model;
 
 import com.huhoot.enums.ChallengeStatus;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Where;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -10,6 +12,7 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Builder
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Data
@@ -20,10 +23,8 @@ public class Challenge extends Auditable {
     @GeneratedValue
     private int id;
 
-    @Column(columnDefinition = "nvarchar(255)")
+    @Column
     private String title;
-
-    private String coverImage;
 
     private ChallengeStatus challengeStatus;
 

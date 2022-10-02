@@ -17,11 +17,10 @@ import java.util.Optional;
 public interface ChallengeRepository extends JpaRepository<Challenge, Integer> {
 
 
-    @Query("SELECT new com.huhoot.dto.ChallengeResponse(n.id, n.title, n.coverImage, n.randomAnswer, " +
-            "n.randomQuest, n.challengeStatus, n.admin.username, n.admin.socketId, n.createdDate, n.createdBy, " +
+    @Query("SELECT new com.huhoot.dto.ChallengeResponse(n.id, n.title, n.challengeStatus, n.customer.username, n.customer.socketId, n.createdDate, n.createdBy, " +
             "n.modifiedDate, n.modifiedBy) " +
             "FROM Challenge n " +
-            "WHERE n.admin.id = :adminId")
+            "WHERE n.customer.id = :adminId")
     Page<ChallengeResponse> findAllByAdminId(@Param("adminId") int adminId, Pageable pageable);
 
     Page<Challenge> findAll(Pageable pageable);
@@ -59,45 +58,19 @@ public interface ChallengeRepository extends JpaRepository<Challenge, Integer> {
 
 
 
-
-
-
-
-
     @Query("SELECT n.key.challenge " +
             "FROM Participant n " +
             "WHERE n.key.customer.id = :studentId AND n.key.challenge.isNonDeleted = TRUE " +
             "AND n.key.challenge.challengeStatus <> com.huhoot.enums.ChallengeStatus.BUILDING")
     List<Challenge> findAllByStudentIdAndIsAvailable(@Param("studentId") int studentId, Pageable pageable);
 
-    @Modifying
-    @Transactional
-    @Query("UPDATE Challenge n " +
-            "SET n.userAutoOrganizeId = :userAutoOrganizeId " +
-            "WHERE n.id = :challengeId")
-    void updateUserAutoOrganizeId(@Param("challengeId")int challengeId,
-                                  @Param("userAutoOrganizeId") Integer userAutoOrganizeId);@Modifying
-    @Transactional
-    @Query("UPDATE Challenge n " +
-            "SET n.autoOrganize = :autoOrganize " +
-            "WHERE n.id = :challengeId")
-    void updateAutoOrganizeStatus(@Param("challengeId")int challengeId,
-                                  @Param("autoOrganize") boolean autoOrganize);
 
-    @Query("SELECT n " +
-            "FROM Challenge n " +
-            "WHERE n.id = :challengeId AND n.userAutoOrganizeId = :userAutoOrganizeId ")
-    Optional<Challenge> findOneByIdByAutoOrganizer(@Param("challengeId") int challengeId,@Param("userAutoOrganizeId") int userAutoOrganizeId);
-
-
-    @Query("SELECT new com.huhoot.dto.ChallengeResponse(n.id, n.title, n.coverImage, n.randomAnswer, " +
-            "n.randomQuest, n.challengeStatus, n.admin.username, n.admin.socketId, n.createdDate, n.createdBy, " +
+    @Query("SELECT new com.huhoot.dto.ChallengeResponse(n.id, n.title, n.challengeStatus, n.customer.username, n.customer.socketId, n.createdDate, n.createdBy, " +
             "n.modifiedDate, n.modifiedBy) " +
             "FROM Challenge n ")
     Page<ChallengeResponse> findAllChallengeResponse(Pageable pageable);
 
-    @Query("SELECT new com.huhoot.dto.ChallengeResponse(n.id, n.title, n.coverImage, n.randomAnswer, " +
-            "n.randomQuest, n.challengeStatus, n.admin.username, n.admin.socketId, n.createdDate, n.createdBy, " +
+    @Query("SELECT new com.huhoot.dto.ChallengeResponse(n.id, n.title, n.challengeStatus, n.customer.username, n.customer.socketId, n.createdDate, n.createdBy, " +
             "n.modifiedDate, n.modifiedBy) " +
             "FROM Challenge n " +
             "WHERE n.id = :challengeId")

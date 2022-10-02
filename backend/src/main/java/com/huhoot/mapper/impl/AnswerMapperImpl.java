@@ -30,11 +30,8 @@ public class AnswerMapperImpl implements AnswerMapper {
             entity.setNonDeleted( dto.getIsNonDeleted() );
         }
         entity.setId( dto.getId() );
-        if ( dto.getOrdinalNumber() != null ) {
-            entity.setOrdinalNumber( dto.getOrdinalNumber() );
-        }
         if ( dto.getAnswerContent() != null ) {
-            entity.setAnswerContent( dto.getAnswerContent() );
+            entity.setContent( dto.getAnswerContent() );
         }
     }
 }

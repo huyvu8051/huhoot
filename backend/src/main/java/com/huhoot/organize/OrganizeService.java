@@ -1,7 +1,6 @@
 package com.huhoot.organize;
 
 import com.corundumstudio.socketio.SocketIOClient;
-import com.huhoot.exception.NoClientInBroadcastOperations;
 import com.huhoot.model.Challenge;
 import com.huhoot.model.Customer;
 import com.huhoot.model.Question;
@@ -29,10 +28,10 @@ public interface OrganizeService {
     /**
      * Sent all Answer to all {@link SocketIOClient} in {@link com.corundumstudio.socketio.BroadcastOperations}
      *
-
      * @throws NullPointerException not found exception
      */
     void showCorrectAnswer(Question question) throws NullPointerException;
+
     PageResponse showCorrectAnswer(int challengeId) throws NullPointerException;
 
     /**
@@ -61,11 +60,6 @@ public interface OrganizeService {
 
     void publishNextQuestion(int challengeId) throws Exception;
 
-
-    void findAnyClientAndEnableAutoOrganize(int challengeId) throws NoClientInBroadcastOperations;
-    void disableAutoOrganize(int challengeId);
-
-    void updateChallengeStatusToClient(int challengeId);
 
     PageResponse<StudentInChallengeResponse> getAllStudentInChallengeIsLogin(int challengeId);
 }

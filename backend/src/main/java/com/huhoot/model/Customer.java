@@ -1,6 +1,7 @@
 package com.huhoot.model;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -13,6 +14,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
+@Builder
 @Entity
 @Getter
 @NoArgsConstructor

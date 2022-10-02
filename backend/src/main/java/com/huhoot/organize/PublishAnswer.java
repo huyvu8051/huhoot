@@ -14,31 +14,27 @@ import java.util.Date;
 @AllArgsConstructor
 public class PublishAnswer extends AuditableDto {
     private int id;
-    private int ordinalNumber;
     private String answerContent;
     private Boolean isCorrect;
     private boolean isSelected;
 
-    public PublishAnswer(int id, int ordinalNumber, String answerContent, Boolean isCorrect,
+    public PublishAnswer(int id, String answerContent, Boolean isCorrect,
                          boolean isSelected, Long createdDate, String createdBy, Long modifiedDate, String modifiedBy) {
         super(createdDate, createdBy, modifiedDate, modifiedBy);
         this.id = id;
-        this.ordinalNumber = ordinalNumber;
         this.answerContent = answerContent;
         this.isCorrect = isCorrect;
         this.isSelected = isSelected;
     }
 
-    public PublishAnswer(int id, int ordinalNumber, String answerContent, boolean isCorrect) {
+    public PublishAnswer(int id, String answerContent, boolean isCorrect) {
         this.id = id;
-        this.ordinalNumber = ordinalNumber;
         this.answerContent = answerContent;
         this.isCorrect = isCorrect;
     }
 
-    public PublishAnswer(int id, int ordinalNumber, String answerContent) {
+    public PublishAnswer(int id, String answerContent) {
         this.id = id;
-        this.ordinalNumber = ordinalNumber;
         this.answerContent = answerContent;
     }
 }

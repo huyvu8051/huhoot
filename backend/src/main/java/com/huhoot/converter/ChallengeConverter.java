@@ -13,11 +13,8 @@ public class ChallengeConverter {
         ChallengeResponse response = new ChallengeResponse();
         response.setId(entity.getId());
         response.setTitle(entity.getTitle());
-        response.setCoverImage(entity.getCoverImage());
-        response.setRandomAnswer(entity.isRandomAnswer());
-        response.setRandomQuest(entity.isRandomQuest());
         response.setChallengeStatus(entity.getChallengeStatus());
-        response.setOwner(entity.getAdmin().getUsername());
+        response.setOwner(entity.getCustomer().getUsername());
         if(entity.getCreatedDate() != null){
             response.setCreatedDate(entity.getCreatedDate());
         }
@@ -34,8 +31,6 @@ public class ChallengeConverter {
         Challenge challenge = new Challenge();
         challenge.setTitle(request.getTitle());
         // challenge.setCoverImage(request.getCoverImage());
-        challenge.setRandomAnswer(request.isRandomAnswer());
-        challenge.setRandomQuest(request.isRandomQuest());
         challenge.setChallengeStatus(ChallengeStatus.WAITING);
         return challenge;
     }

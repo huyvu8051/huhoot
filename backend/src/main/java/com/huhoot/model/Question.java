@@ -1,7 +1,5 @@
 package com.huhoot.model;
 
-import com.huhoot.enums.AnswerOption;
-import com.huhoot.enums.Points;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -30,15 +28,11 @@ public class Question extends Auditable {
 
 
     @Column(columnDefinition = "nvarchar(255)")
-    private String questionContent;
+    private String content;
 
-    private String questionImage;
+    private String image;
 
     private int answerTimeLimit;
-
-    private Points point;
-
-    private AnswerOption answerOption;
 
     private Long askDate;
     private Long timeout;
@@ -54,14 +48,14 @@ public class Question extends Auditable {
     @OneToMany(mappedBy = "question")
     private List<Answer> answers = new ArrayList<>();
 
-    @OneToMany(mappedBy = "primaryKey.question", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "key.question", cascade = CascadeType.ALL)
     private List<StudentAnswer> studentAnswers = new ArrayList<>();
 
     public Question() {
         this.isNonDeleted = true;
     }
 
-    public Question(int id){
+    public Question(int id) {
         this.id = id;
     }
 

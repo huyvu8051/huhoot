@@ -41,9 +41,7 @@ public class ManageAnswerServiceImpl implements ManageAnswerService {
         Question question = optional.orElseThrow(() -> new NullPointerException("Challenge not found"));
 
         Answer answer = AnswerConverter.toEntity(request);
-        int nextOrdinalNumber = answerRepository.getNextOrdinalNumber(question.getId());
         answer.setQuestion(question);
-        answer.setOrdinalNumber(nextOrdinalNumber);
         answerRepository.save(answer);
 
     }
@@ -69,7 +67,6 @@ public class ManageAnswerServiceImpl implements ManageAnswerService {
         for (AnswerOrdinal dto : list) {
             Optional<Answer> optional = answerRepository.findOneById(dto.getId());
             Answer entity = optional.orElseThrow(() -> new NullPointerException("Question not found"));
-            entity.setOrdinalNumber(dto.getOrdinalNumber());
             result.add(entity);
         }
 

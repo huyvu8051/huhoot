@@ -8,11 +8,10 @@ public class QuestionConverter {
 
     public static Question toEntity(QuestionAddRequest request) {
         Question question = new Question();
-        question.setQuestionContent(request.getQuestionContent());
-        question.setQuestionImage(request.getQuestionImage());
+        question.setContent(request.getQuestionContent());
+        question.setImage(request.getQuestionImage());
         question.setAnswerTimeLimit(request.getAnswerTimeLimit());
-        question.setPoint(request.getPoint());
-        question.setAnswerOption(request.getAnswerOption());
+
         return question;
     }
 

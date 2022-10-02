@@ -23,6 +23,6 @@ public class AuthenticationReq {
 	@NotNull
 	@NotBlank
 	@NotEmpty
-	@Length(min = 4, max = 30)
+	@Length(min = 2, max = 30)
 	private String password;
 }

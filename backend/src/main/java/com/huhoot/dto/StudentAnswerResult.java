@@ -18,8 +18,7 @@ public class StudentAnswerResult {
         this.answerDate = answerDate;
         this.answer = PublishAnswer.builder()
                 .id(answerModel.getId())
-                .ordinalNumber(answerModel.getOrdinalNumber())
-                .answerContent(answerModel.getAnswerContent())
+                .answerContent(answerModel.getContent())
                 .isCorrect(answerModel.isCorrect())
                 .build();
 
