@@ -18,13 +18,11 @@
     </properties>
     <dependencies>
 
-        <!-- proxy socket.io request -->
-<!--        <dependency>-->
-<!--            <groupId>org.springframework.cloud</groupId>-->
-<!--            <artifactId>spring-cloud-starter-netflix-zuul</artifactId>-->
-<!--            <version>2.2.10.RELEASE</version>-->
-<!--        </dependency>-->
-
+        <!--cache-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-cache</artifactId>
+        </dependency>
         <!-- reactive request -->
 
         <dependency>
@@ -43,14 +41,14 @@
         <dependency>
             <groupId>com.github.javafaker</groupId>
             <artifactId>javafaker</artifactId>
-            <version>0.12</version>
+            <version>1.0.2</version>
         </dependency>
 
         <!-- mapstruct -->
         <dependency>
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct</artifactId>
-            <version>1.4.2.Final</version>
+            <version>1.5.2.Final</version>
         </dependency>
         <!-- mysql -->
         <dependency>
@@ -66,22 +64,6 @@
             <artifactId>netty-socketio</artifactId>
             <version>1.7.22</version>
         </dependency>
-        <!-- commons-lang3 -->
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <version>3.4</version>
-        </dependency>
-
-
-
-        <!-- hibernate validator -->
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-validator</artifactId>
-            <version>6.0.16.Final</version>
-        </dependency>
-
 
 
         <!-- jwt -->
@@ -119,14 +101,6 @@
             <artifactId>spring-boot-devtools</artifactId>
         </dependency>
 
-
-        <!-- mssql driver -->
-        <dependency>
-            <groupId>com.microsoft.sqlserver</groupId>
-            <artifactId>mssql-jdbc</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -137,8 +111,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
         </dependency>
-
-
 
     </dependencies>
     <build>

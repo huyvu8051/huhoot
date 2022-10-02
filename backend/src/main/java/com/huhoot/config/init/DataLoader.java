@@ -32,6 +32,7 @@ public class DataLoader implements ApplicationRunner {
     private final AnswerRepository answerRepository;
     private final EncryptUtils encryptUtils;
 
+
     public void run(ApplicationArguments args) {
 
 
@@ -89,7 +90,6 @@ public class DataLoader implements ApplicationRunner {
                     Challenge challenge = new Challenge();
 
 
-
                     challenge.setTitle(faker.lorem().paragraph());
                     challenge.setChallengeStatus(ChallengeStatus.WAITING);
 
@@ -106,7 +106,7 @@ public class DataLoader implements ApplicationRunner {
 
 
                     for (int x = 0; x < 7; x++) {
-                        Student student1 = new Student("student" + i + j + x,  faker.name().fullName(), passwordEncoder.encode("password"));
+                        Student student1 = new Student("student" + i + j + x, faker.name().fullName(), passwordEncoder.encode("password"));
                         student1.setCreatedDate(date);
                         student1.setCreatedBy("BobVu");
                         student1.setModifiedDate(date);
@@ -174,7 +174,7 @@ public class DataLoader implements ApplicationRunner {
                             answers.add(answer);
                         }
 
-                        if(answers.stream().noneMatch(e->e.isCorrect())) answers.get(0).setCorrect(true);
+                        if (answers.stream().noneMatch(e -> e.isCorrect())) answers.get(0).setCorrect(true);
 
                         answerRepository.saveAll(answers);
 
