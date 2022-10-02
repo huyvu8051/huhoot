@@ -2,7 +2,6 @@ package com.huhoot.organize;
 
 import com.huhoot.host.manage.studentInChallenge.StudentInChallengeResponse;
 import com.huhoot.model.Admin;
-import com.huhoot.model.Question;
 import com.huhoot.repository.QuestionRepository;
 import com.huhoot.vue.vdatatable.paging.PageResponse;
 import lombok.AllArgsConstructor;
@@ -12,11 +11,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @AllArgsConstructor
 @RestController("hostOrganizeController")
-@RequestMapping("host")
+@RequestMapping("api/organizer")
 public class OrganizeController {
 
 
@@ -24,19 +21,16 @@ public class OrganizeController {
     private final OrganizeService organizeService;
 
     @GetMapping("/openChallenge")
-    public ResponseEntity<List<StudentInChallengeResponse>> openChallenge(@RequestParam int challengeId) throws Exception {
+    public void openChallenge(@RequestParam int challengeId) throws Exception {
         Admin userDetails = (Admin) SecurityContextHolder.getContext().getAuthentication()
                 .getPrincipal();
 
-        return ResponseEntity.ok(organizeService.openChallenge(userDetails, challengeId));
+       organizeService.openChallenge(userDetails, challengeId);
     }
 
-    @GetMapping("/studentOnline")
-    public ResponseEntity<List<StudentInChallengeResponse>> updateStudentOnline(@RequestParam int challengeId) {
-        Admin userDetails = (Admin) SecurityContextHolder.getContext().getAuthentication()
-                .getPrincipal();
-
-        return ResponseEntity.ok(organizeService.getAllStudentInChallengeIsLogin(userDetails, challengeId));
+    @GetMapping("/participant")
+    public PageResponse<StudentInChallengeResponse> updateStudentOnline(@RequestParam int challengeId) {
+        return organizeService.getAllStudentInChallengeIsLogin(challengeId);
     }
 
     /**
@@ -57,13 +51,15 @@ public class OrganizeController {
     /**
      * Show correct answer
      *
-     * @param questionId {@link com.huhoot.model.Question} id
+     * @param challengeId {@link com.huhoot.model.Challenge} id
      * @throws NullPointerException not found
      */
     @GetMapping("/showCorrectAnswer")
-    public void showCorrectAnswer(@RequestParam int questionId) throws NullPointerException {
-        Question question = questionRepository.findOneByIdAndAskDateNotNull(questionId).orElseThrow(() -> new NullPointerException("Question not found"));
-        organizeService.showCorrectAnswer(question);
+    public ParticipantsRankResp showCorrectAnswer(@RequestParam int challengeId) throws NullPointerException {
+        PageResponse pageResponse = organizeService.showCorrectAnswer(challengeId);
+        return ParticipantsRankResp.builder()
+                .participantsRank(pageResponse.getList())
+                .build();
     }
 
     /**
@@ -106,10 +102,8 @@ public class OrganizeController {
         organizeService.kickStudent(req.getStudentIds(), req.getChallengeId(), userDetails.getId());
     }
 
-    @GetMapping("/publishNextQuestion")
-    public void publishNextQuestion(@RequestParam int challengeId) throws Exception {
-        Admin userDetails = (Admin) SecurityContextHolder.getContext().getAuthentication()
-                .getPrincipal();
+    @GetMapping("/request")
+    public void publishNextQuestion(@RequestParam int challengeId){
         try {
             organizeService.publishNextQuestion(challengeId);
         } catch (Exception e) {

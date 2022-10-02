@@ -1,25 +1,29 @@
-package com.huhoot;
+package com.huhoot.socket;
 
+import com.corundumstudio.socketio.AuthorizationListener;
 import com.corundumstudio.socketio.Configuration;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.annotation.SpringAnnotationScanner;
+import com.huhoot.socket.SocketExceptionListener;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
-import java.io.InputStream;
-
 @Component
 @Slf4j
-public class ServerRunner implements CommandLineRunner {
+@RequiredArgsConstructor
+public class SocketIoConfig {
     @Value("${huhoot.serverip}")
     private String host = null;
 
     @Value("${huhoot.socket.port}")
     private Integer port = null;
+
+    private final AuthorizationListener authorizationListener;
+
+    private final SocketExceptionListener socketExceptionListener;
 
     @Bean
     public SocketIOServer socketioserver() {
@@ -27,9 +31,13 @@ public class ServerRunner implements CommandLineRunner {
         Configuration config = new Configuration();
         config.setHostname(host);
         config.setPort(port);
+        config.setAllowHeaders("Authorization");
 
-        final SocketIOServer server = new SocketIOServer(config);
+        config.setExceptionListener(socketExceptionListener);
+        config.setAuthorizationListener(authorizationListener);
 
+        SocketIOServer server = new SocketIOServer(config);
+        server.start();
         return server;
     }
 
@@ -38,10 +46,4 @@ public class ServerRunner implements CommandLineRunner {
         return new SpringAnnotationScanner(socketserver);
     }
 
-
-    @Override
-    public void run(String... args) throws Exception {
-
-
-    }
 }

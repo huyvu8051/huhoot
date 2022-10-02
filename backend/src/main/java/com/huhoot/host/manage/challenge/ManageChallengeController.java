@@ -10,6 +10,8 @@ import com.huhoot.vue.vdatatable.paging.VDataTablePagingConverter;
 import com.huhoot.vue.vdatatable.paging.VDataTablePagingRequest;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.annotations.Cache;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.io.IOException;
-import java.util.List;
 
 @Slf4j
 @RestController
@@ -26,14 +27,10 @@ import java.util.List;
 public class ManageChallengeController {
     private final ManageChallengeService manageChallengeService;
 
-    private final CheckOwnerChallenge checkOwnerChallenge;
-
     private final VDataTablePagingConverter vDataTablePagingConverter;
 
 
-
-
-
+    @Cacheable("challenges")
     @GetMapping("/challenge")
     public PageResponse<ChallengeResponse> findAll(VDataTablePagingRequest request) {
 
@@ -60,7 +57,6 @@ public class ManageChallengeController {
     public void update(@Valid @RequestBody ChallengeUpdateRequest request) throws NotYourOwnException, NullPointerException {
         Admin userDetails = (Admin) SecurityContextHolder.getContext().getAuthentication()
                 .getPrincipal();
-
 
 
         Challenge c = manageChallengeService.findChallenge(request.getId());

@@ -1,9 +1,7 @@
 package com.huhoot.config.init;
 
-import com.corundumstudio.socketio.SocketIOServer;
 import com.github.javafaker.Faker;
 import com.huhoot.encrypt.EncryptUtils;
-import com.huhoot.repository.StudentRepository;
 import com.huhoot.enums.AnswerOption;
 import com.huhoot.enums.ChallengeStatus;
 import com.huhoot.enums.Points;
@@ -12,7 +10,6 @@ import com.huhoot.model.*;
 import com.huhoot.repository.*;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -36,20 +33,9 @@ public class DataLoader implements ApplicationRunner {
     private final EncryptUtils encryptUtils;
 
 
-
-    @Autowired
-    private SocketIOServer server;
-
-
     public void run(ApplicationArguments args) {
 
-        try {
-            server.start();
-            log.info("Socket launch successful!");
-        } catch (Exception e) {
-            log.error("Socket launch failure!");
-            log.error(e.getMessage());
-        }
+
 
         Random random = new Random();
 
@@ -104,7 +90,6 @@ public class DataLoader implements ApplicationRunner {
                     Challenge challenge = new Challenge();
 
 
-
                     challenge.setTitle(faker.lorem().paragraph());
                     challenge.setChallengeStatus(ChallengeStatus.WAITING);
 
@@ -121,7 +106,7 @@ public class DataLoader implements ApplicationRunner {
 
 
                     for (int x = 0; x < 7; x++) {
-                        Student student1 = new Student("student" + i + j + x,  faker.name().fullName(), passwordEncoder.encode("password"));
+                        Student student1 = new Student("student" + i + j + x, faker.name().fullName(), passwordEncoder.encode("password"));
                         student1.setCreatedDate(date);
                         student1.setCreatedBy("BobVu");
                         student1.setModifiedDate(date);
@@ -136,6 +121,9 @@ public class DataLoader implements ApplicationRunner {
                         studentChallenge.setModifiedDate(date);
                         studentChallenge.setModifiedBy("Nobody");
                         studentChallenge.setNonDeleted(true);
+
+                        // test, must change to false
+                        studentChallenge.setLogin(true);
 
                         studentChallengeRepository.save(studentChallenge);
 
@@ -186,7 +174,7 @@ public class DataLoader implements ApplicationRunner {
                             answers.add(answer);
                         }
 
-                        if(answers.stream().noneMatch(e->e.isCorrect())) answers.get(0).setCorrect(true);
+                        if (answers.stream().noneMatch(e -> e.isCorrect())) answers.get(0).setCorrect(true);
 
                         answerRepository.saveAll(answers);
 

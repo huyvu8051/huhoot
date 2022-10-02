@@ -13,7 +13,7 @@ import java.util.List;
 
 public interface OrganizeService {
 
-    List<StudentInChallengeResponse> openChallenge(Admin userDetails, int id) throws Exception;
+    void openChallenge(Admin userDetails, int id) throws Exception;
 
     List<StudentInChallengeResponse> getAllStudentInChallengeIsLogin(Admin userDetails, int challengeId);
 
@@ -34,6 +34,7 @@ public interface OrganizeService {
      * @throws NullPointerException not found exception
      */
     void showCorrectAnswer(Question question) throws NullPointerException;
+    PageResponse showCorrectAnswer(int challengeId) throws NullPointerException;
 
     /**
      * @param challengeId {@link Challenge} id
@@ -66,4 +67,6 @@ public interface OrganizeService {
     void disableAutoOrganize(int challengeId);
 
     void updateChallengeStatusToClient(int challengeId);
+
+    PageResponse<StudentInChallengeResponse> getAllStudentInChallengeIsLogin(int challengeId);
 }

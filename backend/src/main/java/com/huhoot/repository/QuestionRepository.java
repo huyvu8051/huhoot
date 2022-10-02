@@ -31,7 +31,8 @@ public interface QuestionRepository extends JpaRepository<Question, Integer> {
     @Transactional
     @Modifying
     @Query("UPDATE Question q " +
-            "SET q.askDate = :askDate, " +
+            "SET " +
+            "q.askDate = :askDate, " +
             "q.timeout = :timeout, " +
             "q.publishedOrderNumber = :publishedOrderNumber " +
             "WHERE q.id = :questionId")

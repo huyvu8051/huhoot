@@ -36,12 +36,12 @@ interface VDataTablePagingRequest {
 
 const challenges = ref([])
 
-Api().get("/organizer/challenge").then(resp => {
+Api().get("/api/organizer/challenge").then(resp => {
   challenges.value = resp.data.list
 })
 
 function enterLobby(challengeId: number) {
-  router.push({name: "organizer.lobby", params: {id: challengeId}})
+  router.push({name: "organizer.lobby", params: {challengeId: challengeId}})
 }
 
 

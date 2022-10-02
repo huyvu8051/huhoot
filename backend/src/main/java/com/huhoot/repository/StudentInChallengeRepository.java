@@ -3,7 +3,6 @@ package com.huhoot.repository;
 import com.huhoot.dto.ChallengeResponse;
 import com.huhoot.host.manage.studentInChallenge.StudentInChallengeResponse;
 import com.huhoot.model.StudentInChallenge;
-import com.huhoot.vue.vdatatable.paging.PageResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -54,6 +53,15 @@ public interface StudentInChallengeRepository extends JpaRepository<StudentInCha
             "AND n.isNonDeleted = TRUE " +
             "AND n.isKicked = FALSE")
     List<StudentInChallengeResponse> findAllStudentIsLogin(@Param("challengeId") int challengeId, @Param("adminId") int adminId);
+
+
+    @Query("SELECT new com.huhoot.host.manage.studentInChallenge.StudentInChallengeResponse(n.primaryKey.student.id, n.primaryKey.student.username, n.primaryKey.student.fullName, n.isLogin, n.isKicked, n.isOnline, n.createdBy, n.createdDate, n.modifiedBy, n.modifiedDate, n.isNonDeleted) " +
+            "FROM StudentInChallenge n " +
+            "WHERE n.primaryKey.challenge.id = :challengeId " +
+            "AND n.isLogin = TRUE " +
+            "AND n.isNonDeleted = TRUE " +
+            "AND n.isKicked = FALSE")
+    Page<StudentInChallengeResponse> findAllStudentIsLogin(@Param("challengeId") int challengeId, Pageable pageable);
 
     @Query("SELECT new com.huhoot.host.manage.studentInChallenge.StudentInChallengeResponse(n.primaryKey.student.id, n.primaryKey.student.username, n.primaryKey.student.fullName, n.isLogin, n.isKicked, n.isOnline, n.createdBy, n.createdDate, n.modifiedBy, n.modifiedDate,  n.isNonDeleted) " +
             "FROM StudentInChallenge n " +

@@ -1,7 +1,6 @@
 package com.huhoot.config.security;
 
 import com.huhoot.auth.MyUserDetailsService;
-import com.huhoot.config.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -33,7 +32,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse resp, FilterChain filterChain)
             throws ServletException, IOException {
 
-        log.warn(req.getRequestURI());
+        // log.warn(req.getRequestURI());
 
         final String authorizationHeader = req.getHeader("Authorization");
 

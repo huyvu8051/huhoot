@@ -17,7 +17,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @EntityListeners({AuditingEntityListener.class})
-@Where(clause = "is_non_deleted=1")
+@Where(clause = "is_non_deleted=true")
 public class Question extends Auditable {
 
     @Id

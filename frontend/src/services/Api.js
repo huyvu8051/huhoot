@@ -1,32 +1,22 @@
-import {useUserInformationStore} from "@/stores/UserInfomation";
+import {useAuthStore} from "@/stores/Auth";
 import axios from "axios";
-import {storeToRefs} from "pinia";
 
-const {jwt} = useUserInformationStore();
-
-console.log(jwt)
-
-interface CustomBodyResponseDTO {
-    status: number,
-    message?: string,
-    data?: object
-}
+const {jwt} = useAuthStore();
 
 let instance = axios.create({
-    baseURL: "/api",
     headers: {
         Authorization: "Bearer " + `${jwt}`,
     }
 });
 
 instance.interceptors.request.use(req => {
-   // console.log(req);
+    // console.log(req);
     return req;
 }, error => Promise.reject(error));
 
 instance.interceptors.response.use(resp => {
 
-    let customBodyRespDTO: CustomBodyResponseDTO = resp.data;
+    let customBodyRespDTO = resp.data;
 
     switch (customBodyRespDTO.status) {
         case 200:
@@ -41,17 +31,11 @@ instance.interceptors.response.use(resp => {
             break;
 
         default :
-            console.log(resp.data);
+            console.warn("resp without wrapped body: ", resp.data);
             break;
     }
-
-
 }, err => Promise.reject(err))
 
 export default () => {
     return instance;
-}
-
-export type {
-    CustomBodyResponseDTO
 }
