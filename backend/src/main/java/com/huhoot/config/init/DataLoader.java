@@ -4,6 +4,7 @@ import com.github.javafaker.Faker;
 import com.huhoot.enums.ChallengeStatus;
 import com.huhoot.enums.TimeLimit;
 import com.huhoot.model.*;
+import com.huhoot.organize.OrganizeService;
 import com.huhoot.repository.*;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,6 +32,7 @@ public class DataLoader implements ApplicationRunner {
     private final QuestionRepository questRepo;
     private final AnswerRepository ansRepo;
     private final ParticipantRepository parRepo;
+    private final OrganizeService orSer;
 
 
     public void run(ApplicationArguments args) {
@@ -78,6 +80,15 @@ public class DataLoader implements ApplicationRunner {
         List<Answer> answers = ansRepo.saveAll(ans);
 
         List<Participant> participants = parRepo.saveAll(challenges.parallelStream().map(ch -> customers.parallelStream().map(cus -> new Participant(cus, ch)).toList()).flatMap(List::stream).toList());
+
+
+        challenges.forEach(c-> {
+            try {
+                orSer.openChallenge(c.getId());
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
 
 
 

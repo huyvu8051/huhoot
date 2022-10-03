@@ -7,6 +7,8 @@ import com.corundumstudio.socketio.annotation.OnConnect;
 import com.corundumstudio.socketio.annotation.OnEvent;
 import com.huhoot.config.security.JwtUtil;
 import com.huhoot.exception.UsernameExistedException;
+import com.huhoot.organize.OrganizeService;
+import com.huhoot.organize.PublishedExam;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class MessageEventHandler {
     private final SocketIOServer socketIOServer;
+    private final OrganizeService orgService;
     private final JwtUtil jwtUtil;
 
     @OnConnect
@@ -35,16 +38,10 @@ public class MessageEventHandler {
         client.set("userId", userId);
         client.set("role", role);
 
-        client.sendEvent("connected", "connect success");
-        log.info("a client was connected, challenge id: " + challengeId);
+        client.sendEvent("connected",orgService.curr);
+        log.info("a client was connected, challengeId: {}, userId: {}", challengeId, userId);
     }
 
-
-    @OnEvent("messageEvent")
-    public void onEvent(SocketIOClient client, AckRequest request, String data) throws UsernameExistedException {
-        client.sendEvent("abc", "chung ta cua hien tai");
-        throw new UsernameExistedException(":v");
-    }
 
 
 }

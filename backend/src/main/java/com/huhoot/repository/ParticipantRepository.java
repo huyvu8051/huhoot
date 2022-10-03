@@ -41,35 +41,30 @@ public interface ParticipantRepository extends JpaRepository<Participant, Intege
             "WHERE n.key.challenge.id = :challengeId " +
             "AND n.key.customer.id = :studentId " +
             "AND n.isNonDeleted = TRUE " +
-            "AND n.isKicked = FALSE " +
             "AND n.key.challenge.challengeStatus NOT IN (com.huhoot.enums.ChallengeStatus.BUILDING, com.huhoot.enums.ChallengeStatus.ENDED)")
     Optional<Participant> findOneByChallengeIdAndStudentIdAndAvailable(@Param("challengeId") int challengeId, @Param("studentId") int studentId);
 
 
-    @Query("SELECT new com.huhoot.organize.StudentInChallengeResponse(n.key.customer.id, n.key.customer.username, n.key.customer.fullName, n.isLogin, n.isKicked, n.isOnline, n.createdBy, n.createdDate, n.modifiedBy, n.modifiedDate, n.isNonDeleted) " +
+    @Query("SELECT new com.huhoot.organize.StudentInChallengeResponse(n.key.customer.id, n.key.customer.username, n.key.customer.fullName, n.isOnline, n.createdBy, n.createdDate, n.modifiedBy, n.modifiedDate, n.isNonDeleted) " +
             "FROM Participant n " +
             "WHERE n.key.challenge.id = :challengeId " +
             "AND n.key.challenge.customer.id = :adminId " +
-            "AND n.isLogin = TRUE " +
-            "AND n.isNonDeleted = TRUE " +
-            "AND n.isKicked = FALSE")
+            "AND n.isNonDeleted = TRUE ")
     List<StudentInChallengeResponse> findAllStudentIsLogin(@Param("challengeId") int challengeId, @Param("adminId") int adminId);
 
 
-    @Query("SELECT new com.huhoot.organize.StudentInChallengeResponse(n.key.customer.id, n.key.customer.username, n.key.customer.fullName, n.isLogin, n.isKicked, n.isOnline, n.createdBy, n.createdDate, n.modifiedBy, n.modifiedDate, n.isNonDeleted) " +
+    @Query("SELECT new com.huhoot.organize.StudentInChallengeResponse(n.key.customer.id, n.key.customer.username, n.key.customer.fullName, n.isOnline, n.createdBy, n.createdDate, n.modifiedBy, n.modifiedDate, n.isNonDeleted) " +
             "FROM Participant n " +
             "WHERE n.key.challenge.id = :challengeId " +
-            "AND n.isLogin = TRUE " +
-            "AND n.isNonDeleted = TRUE " +
-            "AND n.isKicked = FALSE")
+            "AND n.isNonDeleted = TRUE ")
     Page<StudentInChallengeResponse> findAllStudentIsLogin(@Param("challengeId") int challengeId, Pageable pageable);
 
-    @Query("SELECT new com.huhoot.organize.StudentInChallengeResponse(n.key.customer.id, n.key.customer.username, n.key.customer.fullName, n.isLogin, n.isKicked, n.isOnline, n.createdBy, n.createdDate, n.modifiedBy, n.modifiedDate,  n.isNonDeleted) " +
+    @Query("SELECT new com.huhoot.organize.StudentInChallengeResponse(n.key.customer.id, n.key.customer.username, n.key.customer.fullName, n.isOnline, n.createdBy, n.createdDate, n.modifiedBy, n.modifiedDate,  n.isNonDeleted) " +
             "FROM Participant n " +
             "WHERE n.key.challenge.id = :challengeId ")
     Page<StudentInChallengeResponse> findAllByChallengeIdAndAdminId(@Param("challengeId") int challengeId, Pageable pageable);
 
-    @Query("SELECT COUNT(a.key.customer.id) FROM Participant a WHERE a.key.challenge.id = :challengeId AND a.isLogin = true")
+    @Query("SELECT COUNT(a.key.customer.id) FROM Participant a WHERE a.key.challenge.id = :challengeId")
     int getTotalStudentInChallenge(@Param("challengeId") int challengeId);
 
 

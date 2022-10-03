@@ -57,11 +57,7 @@ public class ParticipateServiceImpl implements ParticipateService {
         Challenge challenge = participant.getChallenge();
         ChallengeStatus challengeStatus = challenge.getChallengeStatus();
 
-        if (challengeStatus.equals(ChallengeStatus.IN_PROGRESS) || challengeStatus.equals(ChallengeStatus.LOCKED)) {
-            if (!participant.isLogin()) {
-                throw new ChallengeException("Challenge not available!");
-            }
-        }
+
         // if another device connect to server, disconnect old client
         // Prevent multi device connect to server
         if (customer.getSocketId() != null && !customer.getSocketId().equals(client.getSessionId())) {
@@ -81,7 +77,7 @@ public class ParticipateServiceImpl implements ParticipateService {
         client.sendEvent("registerSuccess", ParticipateJoinSuccessRes.builder().totalPoints(totalPoints).currentExam(this.getCurrentPublishedExam(challengeId)).build());
         // update socket id
         studentRepository.updateSocketId(client.getSessionId(), customer.getId());
-        participant.setLogin(true);
+
         participantRepository.save(participant);
 
     }

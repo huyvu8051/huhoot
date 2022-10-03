@@ -71,34 +71,7 @@ public class OrganizeServiceImpl implements OrganizeService {
      *
      * @throws NullPointerException not found exception
      */
-    @Override
-    public void showCorrectAnswer(Question question) throws NullPointerException {
 
-
-        long now = System.currentTimeMillis();
-
-
-        Challenge challenge = question.getChallenge();
-
-        if (question.getTimeout() != null & question.getTimeout() > now) {
-            question.setTimeout(now);
-            questRepo.save(question);
-        }
-
-        List<Integer> answerResult = answerRepository.findAllCorrectAnswerIds(question.getId());
-
-
-        // gen key for js size
-        byte[] byteKey = question.getEncryptKey();
-        String jsSideKey = encryptUtils.genKeyForJsSide(byteKey);
-
-
-        int totalStudent = participantRepository.getTotalStudentInChallenge(challenge.getId());
-        int totalStudentCorrectAns = studentAnswerRepository.getTotalStudentAnswerByQuestIdAndIsCorrect(question.getId(), true).orElse(0);
-        int totalStudentWrongAns = studentAnswerRepository.getTotalStudentAnswerByQuestIdAndIsCorrect(question.getId(), false).orElse(0);
-
-        socketIOServer.getRoomOperations(challenge.getId() + "").sendEvent("showCorrectAnswer", CorrectAnswerResponse.builder().corrects(answerResult).timeout(question.getTimeout()).encryptKey(jsSideKey).totalStudent(totalStudent).totalStudentCorrect(totalStudentCorrectAns).totalStudentWrong(totalStudentWrongAns).build());
-    }
 
     @Override
     public PageResponse showCorrectAnswer(int challengeId) throws NullPointerException {
@@ -173,7 +146,6 @@ public class OrganizeServiceImpl implements OrganizeService {
 
         for (Participant sic : participants) {
             try {
-                sic.setKicked(true);
                 SocketIOClient client = socketIOServer.getClient(sic.getCustomer().getSocketId());
                 client.sendEvent("kickStudent");
                 client.disconnect();
@@ -212,8 +184,6 @@ public class OrganizeServiceImpl implements OrganizeService {
         publishQuest.setTimeout(timeout);
 
 
-        // update ask date and decryptKey
-        questRepo.updateAskDateAndPublishedOrderNumber(askDate, timeout, questionOrder, question.getId());
 
         // hash correct answer ids
 
@@ -221,6 +191,8 @@ public class OrganizeServiceImpl implements OrganizeService {
 
         String questionToken = encryptUtils.generateQuestionToken(publishAnswers2, askDate, question.getTimeLimit().getValue());
 
+        // update ask date and decryptKey
+        questRepo.updateAskDateAndPublishedOrderNumberEncryptKey(askDate, timeout, questionOrder, question.getId(), questionToken.getBytes());
 
         socketIOServer.getRoomOperations(challengeId + "").sendEvent("publishQuestion", PublishedExam.builder().questionToken(questionToken).question(publishQuest).answers(publishAnswers).build());
 
@@ -261,25 +233,17 @@ public class OrganizeServiceImpl implements OrganizeService {
 
 
     @Override
-    public void openChallenge(Customer userDetails, int challengeId) throws Exception {
-        Optional<Challenge> optional = challengeRepository.findOneById(challengeId);
-        Challenge challenge = optional.orElseThrow(() -> new NullPointerException("Challenge not found"));
+    public void openChallenge( int challengeId) throws Exception {
 
-        long t0 = System.nanoTime();
-        this.createAllStudentAnswerInChallenge(challenge);
-        long t1 = System.nanoTime();
-        double elapsedTimeInSecond = (double) (t1 - t0) / 1_000_000_000;
-        log.info("Elapsed time =" + elapsedTimeInSecond + " seconds");
-
-
-        challenge.setChallengeStatus(ChallengeStatus.WAITING);
-        challengeRepository.updateChallengeStatusById(ChallengeStatus.WAITING, challengeId);
+        this.createAllStudentAnswerInChallenge(challengeId);
 
 
     }
 
 
-    private void createAllStudentAnswerInChallenge(Challenge challenge) throws Exception {
+    private void createAllStudentAnswerInChallenge(int challengeId) throws Exception {
+        Optional<Challenge> optional = challengeRepository.findOneById(challengeId);
+        Challenge challenge = optional.orElseThrow(() -> new NullPointerException("Challenge not found"));
 
 
         List<Customer> customers = studentRepository.findAllStudentInChallenge(challenge.getId());
@@ -295,7 +259,6 @@ public class OrganizeServiceImpl implements OrganizeService {
             List<Answer> answers = quest.getAnswers();
             quest.setAskDate(null);
 
-            validateQuestion(quest, answers);
 
             for (Answer ans : answers) {
                 for (Customer stu : customers) {
@@ -313,17 +276,7 @@ public class OrganizeServiceImpl implements OrganizeService {
 
     }
 
-    private void validateQuestion(Question quest, List<Answer> answers) throws ChallengeException {
-        if (answers.size() == 0) throw new ChallengeException("No answer found for question id = " + quest.getId());
 
-        boolean noAnswerCorrect = answers.stream().noneMatch(Answer::isCorrect);
-
-        if (noAnswerCorrect) {
-            throw new ChallengeException("No any answer correct for question id = " + quest.getId());
-        }
-
-
-    }
 
 
 }

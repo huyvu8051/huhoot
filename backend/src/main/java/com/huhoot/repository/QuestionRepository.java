@@ -34,12 +34,14 @@ public interface QuestionRepository extends JpaRepository<Question, Integer> {
             "SET " +
             "q.askDate = :askDate, " +
             "q.timeout = :timeout, " +
-            "q.publishedOrderNumber = :publishedOrderNumber " +
+            "q.publishedOrderNumber = :publishedOrderNumber, " +
+            "q.encryptKey = :encryptKey " +
             "WHERE q.id = :questionId")
-    void updateAskDateAndPublishedOrderNumber(@Param("askDate") long askDate,
-                                              @Param("timeout") long timeout,
-                                              @Param("publishedOrderNumber") Integer publishedOrderNumber,
-                                              @Param("questionId") int questionId);
+    void updateAskDateAndPublishedOrderNumberEncryptKey(@Param("askDate") long askDate,
+                                                        @Param("timeout") long timeout,
+                                                        @Param("publishedOrderNumber") Integer publishedOrderNumber,
+                                                        @Param("questionId") int questionId,
+                                                        @Param("encryptKey") byte[] token);
 
 
 

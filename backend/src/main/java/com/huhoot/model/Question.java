@@ -46,7 +46,7 @@ public class Question extends Auditable {
     @JoinColumn(name = "challenge_id")
     private Challenge challenge;
 
-    @OneToMany(mappedBy = "question")
+    @OneToMany(mappedBy = "question", fetch = FetchType.EAGER)
     private List<Answer> answers = new ArrayList<>();
 
     @OneToMany(mappedBy = "key.question", cascade = CascadeType.ALL)

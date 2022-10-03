@@ -15,16 +15,11 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("api/organizer")
 public class OrganizeController {
 
-
-    private final QuestionRepository questionRepository;
     private final OrganizeService organizeService;
 
     @GetMapping("/openChallenge")
     public void openChallenge(@RequestParam int challengeId) throws Exception {
-        Customer userDetails = (Customer) SecurityContextHolder.getContext().getAuthentication()
-                .getPrincipal();
-
-        organizeService.openChallenge(userDetails, challengeId);
+        organizeService.openChallenge(challengeId);
     }
 
     @GetMapping("/participant")
@@ -83,8 +78,6 @@ public class OrganizeController {
      */
     @GetMapping("/endChallenge")
     public void endChallenge(@RequestParam int challengeId) throws NullPointerException {
-        Customer userDetails = (Customer) SecurityContextHolder.getContext().getAuthentication()
-                .getPrincipal();
         organizeService.endChallenge(challengeId);
     }
 

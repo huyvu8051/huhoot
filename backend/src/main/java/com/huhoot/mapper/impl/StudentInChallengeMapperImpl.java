@@ -31,8 +31,7 @@ public class StudentInChallengeMapperImpl implements StudentInChallengeMapper {
         studentInChallengeResponse.setStudentId(entityPrimaryKeyStudentId(entity));
         studentInChallengeResponse.setStudentUsername(entityPrimaryKeyStudentUsername(entity));
         studentInChallengeResponse.setStudentFullName(entityPrimaryKeyStudentFullName(entity));
-        studentInChallengeResponse.setIsLogin(entity.isLogin());
-        studentInChallengeResponse.setIsKicked(entity.isKicked());
+
         studentInChallengeResponse.setIsOnline(entity.isOnline());
         studentInChallengeResponse.setCreatedBy(entity.getCreatedBy());
         studentInChallengeResponse.setCreatedDate(entity.getCreatedDate());
@@ -52,9 +51,7 @@ public class StudentInChallengeMapperImpl implements StudentInChallengeMapper {
         if (dto.getIsNonDeleted() != null) {
             entity.setNonDeleted(dto.getIsNonDeleted());
         }
-        if (dto.getIsKicked() != null) {
-            entity.setKicked(dto.getIsKicked());
-        }
+
     }
 
     private int entityPrimaryKeyStudentId(Participant participant) {

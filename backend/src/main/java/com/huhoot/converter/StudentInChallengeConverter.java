@@ -14,8 +14,6 @@ public class StudentInChallengeConverter {
         response.setStudentId(customer.getId());
         response.setStudentUsername(customer.getUsername());
         response.setStudentFullName(customer.getFullName());
-        response.setIsLogin(entity.isLogin());
-        response.setIsKicked(entity.isKicked());
         response.setIsOnline(entity.isOnline());
         return response;
     }

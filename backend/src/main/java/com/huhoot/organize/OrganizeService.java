@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface OrganizeService {
 
-    void openChallenge(Customer userDetails, int id) throws Exception;
+    void openChallenge( int id) throws Exception;
 
     List<StudentInChallengeResponse> getAllStudentInChallengeIsLogin(Customer userDetails, int challengeId);
 
@@ -30,8 +30,6 @@ public interface OrganizeService {
      *
      * @throws NullPointerException not found exception
      */
-    void showCorrectAnswer(Question question) throws NullPointerException;
-
     PageResponse showCorrectAnswer(int challengeId) throws NullPointerException;
 
     /**
