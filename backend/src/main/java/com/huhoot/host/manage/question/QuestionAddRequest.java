@@ -1,7 +1,7 @@
 package com.huhoot.host.manage.question;
 
-import com.huhoot.enums.AnswerOption;
 import com.huhoot.enums.Points;
+import com.huhoot.enums.TimeLimit;
 import lombok.Data;
 
 import javax.validation.constraints.Min;
@@ -23,11 +23,9 @@ public class QuestionAddRequest {
 
     @NotNull
     @Min(5)
-    private int answerTimeLimit;
+    private TimeLimit timeLimit;
 
     @NotNull
     private Points point;
 
-    @NotNull
-    private AnswerOption answerOption;
 }

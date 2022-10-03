@@ -1,5 +1,6 @@
 package com.huhoot.model;
 
+import com.huhoot.enums.TimeLimit;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -27,12 +28,12 @@ public class Question extends Auditable {
     private Integer publishedOrderNumber; // num of published quest
 
 
-    @Column(columnDefinition = "nvarchar(255)")
+    @Column
     private String content;
 
     private String image;
 
-    private int answerTimeLimit;
+    private TimeLimit timeLimit;
 
     private Long askDate;
     private Long timeout;

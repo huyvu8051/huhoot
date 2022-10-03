@@ -49,7 +49,7 @@ public interface QuestionRepository extends JpaRepository<Question, Integer> {
     int findNumberOfPublishedQuestion(@Param("challengeId") int challengeId);
 
     @Query("SELECT new com.huhoot.host.manage.question.QuestionResponse(n.id, n.ordinalNumber, n.content, " +
-            "n.image, n.answerTimeLimit, n.askDate, n.isNonDeleted, n.createdDate, " +
+            "n.image, n.timeLimit, n.askDate, n.isNonDeleted, n.createdDate, " +
             "n.createdBy, n.modifiedDate, n.modifiedBy) " +
             "FROM Question n " +
             "WHERE n.challenge.id = :challengeId " +

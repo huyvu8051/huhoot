@@ -2,14 +2,9 @@ package com.huhoot.config.init;
 
 import com.github.javafaker.Faker;
 import com.huhoot.enums.ChallengeStatus;
-import com.huhoot.model.Answer;
-import com.huhoot.model.Challenge;
-import com.huhoot.model.Customer;
-import com.huhoot.model.Question;
-import com.huhoot.repository.AnswerRepository;
-import com.huhoot.repository.ChallengeRepository;
-import com.huhoot.repository.CustomerRepository;
-import com.huhoot.repository.QuestionRepository;
+import com.huhoot.enums.TimeLimit;
+import com.huhoot.model.*;
+import com.huhoot.repository.*;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationArguments;
@@ -35,6 +30,7 @@ public class DataLoader implements ApplicationRunner {
     private final PasswordEncoder pwEnc;
     private final QuestionRepository questRepo;
     private final AnswerRepository ansRepo;
+    private final ParticipantRepository parRepo;
 
 
     public void run(ApplicationArguments args) {
@@ -63,7 +59,7 @@ public class DataLoader implements ApplicationRunner {
                     .challenge(c)
                     .content(faker.lorem().paragraph())
                     .image(getRandomImgUrl())
-                    .answerTimeLimit(7)
+                    .timeLimit(TimeLimit.TEN_SEC)
                     .isNonDeleted(true)
                     .build()).toList();
             quests.addAll(questions);
@@ -73,13 +69,16 @@ public class DataLoader implements ApplicationRunner {
         List<Question> questions = questRepo.saveAll(quests);
 
 
-        List<Answer> answers = new ArrayList<>();
+        List<Answer> ans = new ArrayList<>();
 
         questions.forEach(e->{
-            answers.addAll(IntStream.range(0,4).mapToObj(index->Answer.builder().content(faker.lorem().paragraph()).isNonDeleted(true).question(e).isCorrect(faker.number().numberBetween(1,4) == index).build()).toList());
+            ans.addAll(IntStream.range(0,4).mapToObj(index->Answer.builder().content(faker.lorem().paragraph()).isNonDeleted(true).question(e).isCorrect(faker.number().numberBetween(1,4) == index).build()).toList());
         });
 
-        ansRepo.saveAll(answers);
+        List<Answer> answers = ansRepo.saveAll(ans);
+
+        List<Participant> participants = parRepo.saveAll(challenges.parallelStream().map(ch -> customers.parallelStream().map(cus -> new Participant(cus, ch)).toList()).flatMap(List::stream).toList());
+
 
 
     }

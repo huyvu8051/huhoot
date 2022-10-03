@@ -1,6 +1,6 @@
 package com.huhoot.host.manage.question;
 
-import com.huhoot.enums.AnswerOption;
+import com.huhoot.enums.TimeLimit;
 import com.huhoot.enums.Points;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,9 +14,8 @@ public class QuestionUpdateRequest {
     private Integer ordinalNumber;
     private String questionContent;
     private String questionImage;
-    private Integer answerTimeLimit;
+    private TimeLimit timeLimit;
     private Points point;
-    private AnswerOption answerOption;
     private Boolean isNonDeleted;
 
 }

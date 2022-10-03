@@ -6,7 +6,6 @@ import com.huhoot.config.security.JwtUtil;
 import com.huhoot.converter.ListConverter;
 import com.huhoot.dto.ChallengeResponse;
 import com.huhoot.encrypt.EncryptUtils;
-import com.huhoot.enums.AnswerOption;
 import com.huhoot.enums.ChallengeStatus;
 import com.huhoot.exception.ChallengeException;
 import com.huhoot.host.manage.challenge.ChallengeMapper;
@@ -29,13 +28,13 @@ import java.util.Optional;
 public class OrganizeServiceImpl implements OrganizeService {
 
     private final QuestionRepository questRepo;
-    private final StudentInChallengeRepository studentInChallengeRepository;
+    private final ParticipantRepository participantRepository;
     private final ChallengeRepository challengeRepository;
     private final SocketIOServer socketIOServer;
     private final ListConverter listConverter;
 
     private final CustomerRepository studentRepository;
-    private final StudentInChallengeRepository studentChallengeRepository;
+    private final ParticipantRepository studentChallengeRepository;
     private final JwtUtil jwtUtil;
     private final EncryptUtils encryptUtils;
     private final ChallengeMapper challengeMapper;
@@ -43,7 +42,7 @@ public class OrganizeServiceImpl implements OrganizeService {
 
     @Override
     public List<StudentInChallengeResponse> getAllStudentInChallengeIsLogin(Customer userDetails, int challengeId) {
-        return studentInChallengeRepository.findAllStudentIsLogin(challengeId, userDetails.getId());
+        return participantRepository.findAllStudentIsLogin(challengeId, userDetails.getId());
     }
 
 
@@ -94,7 +93,7 @@ public class OrganizeServiceImpl implements OrganizeService {
         String jsSideKey = encryptUtils.genKeyForJsSide(byteKey);
 
 
-        int totalStudent = studentInChallengeRepository.getTotalStudentInChallenge(challenge.getId());
+        int totalStudent = participantRepository.getTotalStudentInChallenge(challenge.getId());
         int totalStudentCorrectAns = studentAnswerRepository.getTotalStudentAnswerByQuestIdAndIsCorrect(question.getId(), true).orElse(0);
         int totalStudentWrongAns = studentAnswerRepository.getTotalStudentAnswerByQuestIdAndIsCorrect(question.getId(), false).orElse(0);
 
@@ -117,7 +116,7 @@ public class OrganizeServiceImpl implements OrganizeService {
         String jsSideKey = encryptUtils.genKeyForJsSide(byteKey);
 
 
-        int totalStudent = studentInChallengeRepository.getTotalStudentInChallenge(challengeId);
+        int totalStudent = participantRepository.getTotalStudentInChallenge(challengeId);
         int totalStudentCorrectAns = studentAnswerRepository.getTotalStudentAnswerByQuestIdAndIsCorrect(question.getId(), true).orElse(0);
         int totalStudentWrongAns = studentAnswerRepository.getTotalStudentAnswerByQuestIdAndIsCorrect(question.getId(), false).orElse(0);
 
@@ -169,7 +168,7 @@ public class OrganizeServiceImpl implements OrganizeService {
      */
     @Override
     public void kickStudent(List<Integer> studentIds, int challengeId, int adminId) {
-        List<Participant> participants = studentInChallengeRepository.findAllByStudentIdInAndChallengeIdAndAdminId(studentIds, challengeId, adminId);
+        List<Participant> participants = participantRepository.findAllByStudentIdInAndChallengeIdAndAdminId(studentIds, challengeId, adminId);
 
 
         for (Participant sic : participants) {
@@ -185,7 +184,7 @@ public class OrganizeServiceImpl implements OrganizeService {
         }
 
 
-        studentInChallengeRepository.saveAll(participants);
+        participantRepository.saveAll(participants);
 
     }
 
@@ -198,7 +197,7 @@ public class OrganizeServiceImpl implements OrganizeService {
         int countQuestion = questRepo.countQuestionInChallenge(challengeId);
         int questionOrder = questRepo.findNumberOfPublishedQuestion(challengeId) + 1;
 
-        PublishQuestion publishQuest = PublishQuestion.builder().id(question.getId()).ordinalNumber(question.getOrdinalNumber()).questionContent(question.getContent()).questionImage(question.getImage()).answerTimeLimit(question.getAnswerTimeLimit()).challengeId(challengeId).totalQuestion(countQuestion).questionOrder(questionOrder).theLastQuestion(countQuestion == questionOrder).build();
+        PublishQuestion publishQuest = PublishQuestion.builder().id(question.getId()).ordinalNumber(question.getOrdinalNumber()).questionContent(question.getContent()).questionImage(question.getImage()).answerTimeLimit(question.getTimeLimit().getValue()).challengeId(challengeId).totalQuestion(countQuestion).questionOrder(questionOrder).theLastQuestion(countQuestion == questionOrder).build();
 
         List<AnswerResultResponse> publishAnswers = answerRepository.findAllPublishAnswer(question.getId());
 
@@ -207,7 +206,7 @@ public class OrganizeServiceImpl implements OrganizeService {
         long sec = 6;
         long askDate = System.currentTimeMillis() + sec * 1000;
 
-        long timeout = askDate + question.getAnswerTimeLimit() * 1000;
+        long timeout = askDate + question.getTimeLimit().getValue() * 1000;
 
         publishQuest.setAskDate(askDate);
         publishQuest.setTimeout(timeout);
@@ -220,7 +219,7 @@ public class OrganizeServiceImpl implements OrganizeService {
 
         List<PublishAnswer> publishAnswers2 = answerRepository.findAllAnswerByQuestionIdAndAdminId(question.getId());
 
-        String questionToken = encryptUtils.generateQuestionToken(publishAnswers2, askDate, question.getAnswerTimeLimit());
+        String questionToken = encryptUtils.generateQuestionToken(publishAnswers2, askDate, question.getTimeLimit().getValue());
 
 
         socketIOServer.getRoomOperations(challengeId + "").sendEvent("publishQuestion", PublishedExam.builder().questionToken(questionToken).question(publishQuest).answers(publishAnswers).build());
@@ -234,8 +233,6 @@ public class OrganizeServiceImpl implements OrganizeService {
         Challenge challenge = challengeRepository.findOneById(challengeId).orElseThrow(() -> new NullPointerException("Challenge not found"));
         ChallengeResponse challengeResponse = challengeMapper.toDto(challenge);
         if (!op.isPresent()) {
-
-
             return PublishedExam.builder().challenge(challengeResponse).build();
         }
 
@@ -244,11 +241,11 @@ public class OrganizeServiceImpl implements OrganizeService {
         int countQuestion = questRepo.countQuestionInChallenge(challengeId);
         int questionOrder = questRepo.findNumberOfPublishedQuestion(challengeId) + 1;
 
-        PublishQuestion publishQuest = PublishQuestion.builder().id(currQuestion.getId()).ordinalNumber(currQuestion.getOrdinalNumber()).askDate(currQuestion.getAskDate()).questionContent(currQuestion.getContent()).questionImage(currQuestion.getImage()).answerTimeLimit(currQuestion.getAnswerTimeLimit()).challengeId(challengeId).totalQuestion(countQuestion).questionOrder(questionOrder).theLastQuestion(countQuestion == questionOrder).build();
+        PublishQuestion publishQuest = PublishQuestion.builder().id(currQuestion.getId()).ordinalNumber(currQuestion.getOrdinalNumber()).askDate(currQuestion.getAskDate()).questionContent(currQuestion.getContent()).questionImage(currQuestion.getImage()).answerTimeLimit(currQuestion.getTimeLimit().getValue()).challengeId(challengeId).totalQuestion(countQuestion).questionOrder(questionOrder).theLastQuestion(countQuestion == questionOrder).build();
 
         List<PublishAnswer> publishAnswers2 = answerRepository.findAllAnswerByQuestionIdAndAdminId(currQuestion.getId());
 
-        String questionToken = encryptUtils.generateQuestionToken(publishAnswers2, currQuestion.getAskDate(), currQuestion.getAnswerTimeLimit());
+        String questionToken = encryptUtils.generateQuestionToken(publishAnswers2, currQuestion.getAskDate(), currQuestion.getTimeLimit().getValue());
         List<AnswerResultResponse> publishAnswers = answerRepository.findAllPublishAnswer(currQuestion.getId());
 
         return PublishedExam.builder().questionToken(questionToken).challenge(challengeResponse).question(publishQuest).answers(publishAnswers).build();
@@ -259,7 +256,7 @@ public class OrganizeServiceImpl implements OrganizeService {
 
     @Override
     public PageResponse<StudentInChallengeResponse> getAllStudentInChallengeIsLogin(int challengeId) {
-        return listConverter.toPageResponse(studentInChallengeRepository.findAllStudentIsLogin(challengeId, Pageable.unpaged()));
+        return listConverter.toPageResponse(participantRepository.findAllStudentIsLogin(challengeId, Pageable.unpaged()));
     }
 
 

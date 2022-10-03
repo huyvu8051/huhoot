@@ -10,8 +10,7 @@ public class QuestionConverter {
         Question question = new Question();
         question.setContent(request.getQuestionContent());
         question.setImage(request.getQuestionImage());
-        question.setAnswerTimeLimit(request.getAnswerTimeLimit());
-
+        question.setTimeLimit(request.getTimeLimit());
         return question;
     }
 

@@ -32,7 +32,7 @@ public class ParticipateServiceImpl implements ParticipateService {
 
     private final SocketIOServer socketIOServer;
 
-    private final StudentInChallengeRepository studentInChallengeRepository;
+    private final ParticipantRepository participantRepository;
 
     private final CustomerRepository studentRepository;
 
@@ -52,7 +52,7 @@ public class ParticipateServiceImpl implements ParticipateService {
     @Override
     public void join(SocketIOClient client, int challengeId, Customer customer) throws ChallengeException {
 
-        Optional<Participant> optional = studentInChallengeRepository.findOneByChallengeIdAndStudentIdAndAvailable(challengeId, customer.getId());
+        Optional<Participant> optional = participantRepository.findOneByChallengeIdAndStudentIdAndAvailable(challengeId, customer.getId());
         Participant participant = optional.orElseThrow(() -> new ChallengeException("Challenge not available!"));
         Challenge challenge = participant.getChallenge();
         ChallengeStatus challengeStatus = challenge.getChallengeStatus();
@@ -82,7 +82,7 @@ public class ParticipateServiceImpl implements ParticipateService {
         // update socket id
         studentRepository.updateSocketId(client.getSessionId(), customer.getId());
         participant.setLogin(true);
-        studentInChallengeRepository.save(participant);
+        participantRepository.save(participant);
 
     }
 
@@ -100,11 +100,11 @@ public class ParticipateServiceImpl implements ParticipateService {
         int countQuestion = questionRepository.countQuestionInChallenge(challengeId);
         int questionOrder = questionRepository.findNumberOfPublishedQuestion(challengeId) + 1;
 
-        PublishQuestion publishQuest = PublishQuestion.builder().id(currQuestion.getId()).ordinalNumber(currQuestion.getOrdinalNumber()).askDate(currQuestion.getAskDate()).timeout(currQuestion.getTimeout()).questionContent(currQuestion.getContent()).questionImage(currQuestion.getImage()).answerTimeLimit(currQuestion.getAnswerTimeLimit()).challengeId(challengeId).totalQuestion(countQuestion).questionOrder(questionOrder).theLastQuestion(countQuestion == questionOrder).build();
+        PublishQuestion publishQuest = PublishQuestion.builder().id(currQuestion.getId()).ordinalNumber(currQuestion.getOrdinalNumber()).askDate(currQuestion.getAskDate()).timeout(currQuestion.getTimeout()).questionContent(currQuestion.getContent()).questionImage(currQuestion.getImage()).answerTimeLimit(currQuestion.getTimeLimit().getValue()).challengeId(challengeId).totalQuestion(countQuestion).questionOrder(questionOrder).theLastQuestion(countQuestion == questionOrder).build();
 
         List<PublishAnswer> publishAnswers2 = answerRepository.findAllAnswerByQuestionIdAndAdminId(currQuestion.getId());
 
-        String questionToken = encryptUtils.generateQuestionToken(publishAnswers2, currQuestion.getAskDate(), currQuestion.getAnswerTimeLimit());
+        String questionToken = encryptUtils.generateQuestionToken(publishAnswers2, currQuestion.getAskDate(), currQuestion.getTimeLimit().getValue());
         List<AnswerResultResponse> publishAnswers = answerRepository.findAllPublishAnswer(currQuestion.getId());
 
         return PublishedExam.builder().questionToken(questionToken).challenge(challengeResponse).question(publishQuest).answers(publishAnswers).build();
@@ -138,7 +138,7 @@ public class ParticipateServiceImpl implements ParticipateService {
             isAnswersCorrect = true;
             comboCount = encryptUtils.extractCombo(request.getComboToken(), customer.getUsername(), quest.getPublishedOrderNumber());
             comboCount++;
-            pointReceive = calculatePoint(quest.getAskDate(), nowLong, quest.getAnswerTimeLimit(), comboCount);
+            pointReceive = calculatePoint(quest.getAskDate(), nowLong, quest.getTimeLimit().getValue(), comboCount);
 
         } else {
             // out of time limit

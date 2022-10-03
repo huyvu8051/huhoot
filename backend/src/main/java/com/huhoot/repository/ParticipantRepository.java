@@ -13,7 +13,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
 
-public interface StudentInChallengeRepository extends JpaRepository<Participant, Integer> {
+public interface ParticipantRepository extends JpaRepository<Participant, Integer> {
 
     Page<Participant> findAllByKeyCustomerUsernameContainingIgnoreCaseAndKeyChallengeId(String studentUsername, int challengeId, Pageable pageable);
 

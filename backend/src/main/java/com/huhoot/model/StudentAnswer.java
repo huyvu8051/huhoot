@@ -36,6 +36,12 @@ public class StudentAnswer extends Auditable {
         super();
     }
 
+    public StudentAnswer(Question question, Customer customer,Answer answer,Challenge challenge) {
+        setAnswer(answer);
+        setQuestion(question);
+        setChallenge(challenge);
+        setCustomer(customer);
+    }
 
     @Transient
     public Customer getStudent() {
@@ -63,6 +69,9 @@ public class StudentAnswer extends Auditable {
         getKey().setQuestion(question);
     }
 
+    public void setCustomer(Customer cus){
+        getKey().setCustomer(cus);
+    }
 
     @Transient
     public Answer getAnswer() {

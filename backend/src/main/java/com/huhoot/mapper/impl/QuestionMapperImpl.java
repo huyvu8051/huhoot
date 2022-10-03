@@ -37,8 +37,8 @@ public class QuestionMapperImpl implements QuestionMapper {
         if (dto.getQuestionImage() != null) {
             entity.setImage(dto.getQuestionImage());
         }
-        if (dto.getAnswerTimeLimit() != null) {
-            entity.setAnswerTimeLimit(dto.getAnswerTimeLimit());
+        if (dto.getTimeLimit() != null) {
+            entity.setTimeLimit(dto.getTimeLimit());
         }
     }
 
@@ -54,7 +54,7 @@ public class QuestionMapperImpl implements QuestionMapper {
         questionResponse.setOrdinalNumber(entity.getOrdinalNumber());
         questionResponse.setQuestionContent(entity.getContent());
         questionResponse.setQuestionImage(entity.getImage());
-        questionResponse.setAnswerTimeLimit(entity.getAnswerTimeLimit());
+        questionResponse.setAnswerTimeLimit(entity.getTimeLimit().getValue());
         if (entity.getAskDate() != null) {
             questionResponse.setAskDate(entity.getAskDate());
         }

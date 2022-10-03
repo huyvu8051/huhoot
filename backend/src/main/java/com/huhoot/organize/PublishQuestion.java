@@ -1,13 +1,10 @@
 package com.huhoot.organize;
 
-import com.huhoot.enums.AnswerOption;
 import com.huhoot.enums.Points;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.Date;
 
 @Data
 @NoArgsConstructor
@@ -25,8 +22,6 @@ public class PublishQuestion {
 
     private Points point;
 
-    private AnswerOption answerOption;
-
     private int challengeId;
 
     private int totalQuestion;
@@ -35,7 +30,7 @@ public class PublishQuestion {
 
     private boolean theLastQuestion;
 
-    public PublishQuestion(int id, int ordinalNumber, String questionContent, String questionImage, int answerTimeLimit, Points point, AnswerOption answerOption, int challengeId,int totalQuestion) {
+    public PublishQuestion(int id, int ordinalNumber, String questionContent, String questionImage, int answerTimeLimit, Points point, int challengeId,int totalQuestion) {
         this.id = id;
         this.ordinalNumber = ordinalNumber;
         this.questionContent = questionContent;
@@ -43,11 +38,10 @@ public class PublishQuestion {
 
         this.questionImage = questionImage;
         this.point = point;
-        this.answerOption = answerOption;
         this.challengeId = challengeId;
         this.totalQuestion = totalQuestion;
     }
-    public PublishQuestion(int id, int ordinalNumber, String questionContent, String questionImage, int answerTimeLimit, Points point, Long askDate, AnswerOption answerOption, int challengeId, int totalQuestion) {
+    public PublishQuestion(int id, int ordinalNumber, String questionContent, String questionImage, int answerTimeLimit, Points point, Long askDate, int challengeId, int totalQuestion) {
         this.id = id;
         this.ordinalNumber = ordinalNumber;
         this.questionContent = questionContent;
@@ -55,7 +49,6 @@ public class PublishQuestion {
         this.askDate = askDate;
         this.questionImage = questionImage;
         this.point = point;
-        this.answerOption = answerOption;
         this.challengeId = challengeId;
         this.totalQuestion = totalQuestion;
     }
