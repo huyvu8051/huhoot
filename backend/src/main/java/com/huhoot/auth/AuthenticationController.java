@@ -1,6 +1,7 @@
 package com.huhoot.auth;
 
 import com.huhoot.config.security.JwtUtil;
+import com.huhoot.model.Customer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -30,7 +31,7 @@ public class AuthenticationController {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(formattedUsername, request.getPassword()));
 
-        final UserDetails userDetails = myUserDetailsService.loadUserByUsername(formattedUsername);
+        final Customer userDetails = (Customer) myUserDetailsService.loadUserByUsername(formattedUsername);
 
         final String jwt = jwtUtil.generateToken(userDetails);
 

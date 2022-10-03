@@ -73,4 +73,10 @@ public interface ParticipantRepository extends JpaRepository<Participant, Intege
             "FROM Participant n " +
             "WHERE n.key.customer.username = :username")
     Page<ChallengeResponse> findAllChallengeResByStudent(@Param("username") String username, Pageable pageable1);
+
+    @Query("SELECT new com.huhoot.dto.ChallengeResponse(n.key.challenge.id, n.key.challenge.title,  n.key.challenge.challengeStatus, n.key.challenge.customer.username, n.key.challenge.customer.socketId, n.key.challenge.createdDate, n.key.challenge.createdBy, " +
+            "n.key.challenge.modifiedDate, n.key.challenge.modifiedBy) " +
+            "FROM Participant n " +
+            "WHERE n.key.customer.id = :id")
+    Page<ChallengeResponse> findAllByKeyCustomerId(@Param("id") int id, Pageable pageable);
 }

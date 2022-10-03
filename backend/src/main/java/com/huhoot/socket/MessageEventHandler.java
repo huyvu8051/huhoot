@@ -1,18 +1,17 @@
 package com.huhoot.socket;
 
-import com.corundumstudio.socketio.AckRequest;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.annotation.OnConnect;
-import com.corundumstudio.socketio.annotation.OnEvent;
 import com.huhoot.config.security.JwtUtil;
-import com.huhoot.exception.UsernameExistedException;
 import com.huhoot.organize.OrganizeService;
-import com.huhoot.organize.PublishedExam;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+
+import java.util.Collection;
+import java.util.List;
 
 @Component
 @Slf4j
@@ -33,15 +32,14 @@ public class MessageEventHandler {
         Claims claims = jwtUtil.extractAllClaims(token);
 
         Integer userId = claims.get("userId", Integer.class);
-        String role = claims.get("role", String.class);
+        Collection roles = claims.get("roles", Collection.class);
 
         client.set("userId", userId);
-        client.set("role", role);
+        client.set("roles", roles);
 
-        client.sendEvent("connected",orgService.curr);
+        client.sendEvent("connected", orgService.getCurrentPublishedExam(Integer.valueOf(challengeId)));
         log.info("a client was connected, challengeId: {}, userId: {}", challengeId, userId);
     }
-
 
 
 }

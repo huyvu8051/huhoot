@@ -28,7 +28,6 @@ public class ManageChallengeController {
     private final VDataTablePagingConverter vDataTablePagingConverter;
 
 
-    @Cacheable("challenges")
     @GetMapping("/challenge")
     public PageResponse<ChallengeResponse> findAll(VDataTablePagingRequest request) {
 
@@ -38,6 +37,17 @@ public class ManageChallengeController {
         Pageable pageable = vDataTablePagingConverter.toPageable(request);
 
         return manageChallengeService.findAllOwnChallenge(customer.getId(), pageable);
+    }
+
+    @GetMapping("/participate")
+    public PageResponse<ChallengeResponse> findAllParticipate(VDataTablePagingRequest request) {
+
+        Customer customer = (Customer) SecurityContextHolder.getContext().getAuthentication()
+                .getPrincipal();
+
+        Pageable pageable = vDataTablePagingConverter.toPageable(request);
+
+        return manageChallengeService.findAllParticipate(customer.getId(), pageable);
     }
 
 

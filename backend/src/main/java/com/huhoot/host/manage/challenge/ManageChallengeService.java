@@ -28,4 +28,6 @@ public interface ManageChallengeService {
     int findStudentRank(int studentId, int challengeId);
 
     double getStudentTotalPoint(int studentId, int challengeId);
+
+    PageResponse<ChallengeResponse> findAllParticipate(int id, Pageable pageable);
 }

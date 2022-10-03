@@ -10,7 +10,7 @@ let instance = axios.create({
 });
 
 instance.interceptors.request.use(req => {
-     console.log(req);
+    console.log("req", req);
     return req;
 }, error => Promise.reject(error));
 

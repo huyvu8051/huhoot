@@ -60,4 +60,6 @@ public interface OrganizeService {
 
 
     PageResponse<StudentInChallengeResponse> getAllStudentInChallengeIsLogin(int challengeId);
+
+    PublishedExam getCurrentPublishedExam(int challengeId);
 }

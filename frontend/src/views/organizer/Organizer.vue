@@ -1,7 +1,6 @@
 <template>
   <div class="organizer">
-    <router-view></router-view>
-<!--    <button class="control-button" @click="click">click</button>-->
+    <router-view v-if="connected"></router-view>
   </div>
 </template>
 
@@ -12,6 +11,7 @@ import {useRoute} from "vue-router"
 import {useAuthStore} from "@/stores/Auth";
 import router from "@/router";
 import {useOrganizerStore} from "@/stores/Organizer";
+import {ref} from "vue";
 
 export default {
   setup() {
@@ -32,10 +32,14 @@ export default {
         }
       }
     });
-    socket.on("connected", (e) => {
-      console.log("socket connected: ", e);
+
+    const connected = ref(false)
+
+    socket.on("connected", msg => {
+      organizerStore.update(msg);
+      connected.value = true;
     });
-   socket.on("showCorrectAnswer", organizerStore.update);
+    socket.on("showCorrectAnswer", organizerStore.update);
 
 
     socket.on("publishQuestion", async msg => {
@@ -44,17 +48,9 @@ export default {
     })
 
 
-    function click() {
-        alert("chung ta cua hien tai")
-    }
-
-    function result(){
-      router.push({name:"organizer.result"})
-    }
 
     return {
-      click,
-      result
+      connected
     }
 
   }
@@ -63,10 +59,11 @@ export default {
 </script>
 
 <style scoped>
-.organizer{
+.organizer {
   height: 97vh;
   /*background-color: rgba(44, 62, 80, 0.38);*/
 }
+
 .control-button {
   height: 5%;
   width: calc(50% - 1vmin);

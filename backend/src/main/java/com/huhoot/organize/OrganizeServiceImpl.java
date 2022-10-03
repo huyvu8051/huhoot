@@ -76,7 +76,6 @@ public class OrganizeServiceImpl implements OrganizeService {
     @Override
     public PageResponse showCorrectAnswer(int challengeId) throws NullPointerException {
         PublishedExam currentPublishedExam = getCurrentPublishedExam(challengeId);
-        long now = System.currentTimeMillis();
 
 
         Question question = questRepo.findOneById(currentPublishedExam.getQuestion().getId()).orElseThrow(() -> new NullPointerException("No question"));
@@ -88,13 +87,7 @@ public class OrganizeServiceImpl implements OrganizeService {
         byte[] byteKey = question.getEncryptKey();
         String jsSideKey = encryptUtils.genKeyForJsSide(byteKey);
 
-
-        int totalStudent = participantRepository.getTotalStudentInChallenge(challengeId);
-        int totalStudentCorrectAns = studentAnswerRepository.getTotalStudentAnswerByQuestIdAndIsCorrect(question.getId(), true).orElse(0);
-        int totalStudentWrongAns = studentAnswerRepository.getTotalStudentAnswerByQuestIdAndIsCorrect(question.getId(), false).orElse(0);
-
-        socketIOServer.getRoomOperations(challengeId + "").sendEvent("showCorrectAnswer", CorrectAnswerResponse.builder().corrects(answerResult).timeout(question.getTimeout()).encryptKey(jsSideKey).totalStudent(totalStudent).totalStudentCorrect(totalStudentCorrectAns).totalStudentWrong(totalStudentWrongAns).build());
-
+        socketIOServer.getRoomOperations(challengeId + "").sendEvent("showCorrectAnswer", CorrectAnswerResponse.builder().corrects(answerResult).timeout(question.getTimeout()).encryptKey(jsSideKey).build());
 
         Page<StudentScoreResponse> response = studentAnswerRepository.findTopStudent(challengeId, Pageable.unpaged());
 

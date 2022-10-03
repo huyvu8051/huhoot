@@ -2,7 +2,14 @@ import {defineStore} from 'pinia'
 
 export const useOrganizerStore = defineStore('organizer', {
     state: () => ({
-        questionToken: "",
+        challenge: {
+            autoOrganize: false,
+            challengeStatus: "",
+            createdDate: 0,
+            id: 0,
+            modifiedDate: 0,
+            title: ""
+        },
         question: {
             "id": 0,
             "ordinalNumber": 0,
@@ -20,17 +27,10 @@ export const useOrganizerStore = defineStore('organizer', {
         },
         answers: [{
             "id": 0,
-            "ordinalNumber": 0,
             "content": "",
             style: {}
         }],
         corrects: [0],
-        selected: [0],
-        encryptKey: "",
-        timeout: 0,
-        totalStudent: 0,
-        totalStudentCorrect: 0,
-        totalStudentWrong: 0,
         participantsRank: [{
             fullName: "",
             id: 0,
@@ -40,7 +40,7 @@ export const useOrganizerStore = defineStore('organizer', {
     }),
     actions: {
         update(input) {
-            console.log(input)
+            console.log("update org", input)
             let state = this;
             state = Object.assign(state, input)
 
@@ -56,8 +56,7 @@ export const useOrganizerStore = defineStore('organizer', {
             }
 
         }
-    }
-    ,
+    },
     persist: {
         enabled: true
     }

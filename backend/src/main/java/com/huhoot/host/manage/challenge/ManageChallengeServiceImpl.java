@@ -6,6 +6,7 @@ import com.huhoot.exception.NotYourOwnException;
 import com.huhoot.model.Challenge;
 import com.huhoot.model.Customer;
 import com.huhoot.repository.ChallengeRepository;
+import com.huhoot.repository.ParticipantRepository;
 import com.huhoot.repository.StudentAnswerRepository;
 import com.huhoot.vue.vdatatable.paging.PageResponse;
 import lombok.AllArgsConstructor;
@@ -22,6 +23,8 @@ public class ManageChallengeServiceImpl implements ManageChallengeService {
 
     private final ChallengeMapper challengeMapper;
     private final StudentAnswerRepository studentAnswerRepository;
+
+    private final ParticipantRepository participantRepo;
 
 
 
@@ -90,6 +93,13 @@ public class ManageChallengeServiceImpl implements ManageChallengeService {
     public double getStudentTotalPoint(int studentId, int challengeId) {
 
         return studentAnswerRepository.getTotalPointInChallenge(challengeId, studentId);
+    }
+
+    @Override
+    public PageResponse<ChallengeResponse> findAllParticipate(int id, Pageable pageable) {
+        Page<ChallengeResponse> allByKeyCustomerId = participantRepo.findAllByKeyCustomerId(id, pageable);
+
+        return listConverter.toPageResponse(allByKeyCustomerId);
     }
 
 

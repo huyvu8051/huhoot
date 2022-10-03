@@ -2,6 +2,7 @@
   <h1>
     Organizer home
   </h1>
+  <h2>Challenges</h2>
   <table>
     <tr>
       <th>id</th>
@@ -12,36 +13,52 @@
       <td>{{ challenge.id }}</td>
       <td>{{ challenge.title }}</td>
       <td>
-        <button @click="enterLobby(challenge.id)">start</button>
+        <button @click="host(challenge.id)">Host</button>
+      </td>
+    </tr>
+  </table>
+
+  <h2>Participates</h2>
+  <table>
+    <tr>
+      <th>id</th>
+      <th>title</th>
+      <th>actions</th>
+    </tr>
+    <tr v-for="(challenge, index) in participates" key="index">
+      <td>{{ challenge.id }}</td>
+      <td>{{ challenge.title }}</td>
+      <td>
+        <button @click="join(challenge.id)">Join</button>
       </td>
     </tr>
   </table>
 </template>
 
-<script setup lang="ts">
+<script setup >
 import Api from "@/services/Api"
 import {ref} from "vue";
 import router from "@/router";
 
-interface VDataTablePagingRequest {
-  groupBy: string[] | [],
-  groupDesc: string[] | [],
-  itemsPerPage: number | 12,
-  multiSort: boolean | false,
-  mustSort: boolean | false,
-  page: number | 1,
-  sortBy: string[] | [],
-  sortDesc: boolean[] | []
-}
 
 const challenges = ref([])
+
+const participates = ref([])
 
 Api().get("/api/organizer/challenge").then(resp => {
   challenges.value = resp.data.list
 })
 
-function enterLobby(challengeId: number) {
+Api().get("/api/organizer/participate").then(resp => {
+  console.log(resp.data)
+  participates.value = resp.data.list
+})
+
+function host(challengeId) {
   router.push({name: "organizer.lobby", params: {challengeId: challengeId}})
+}
+function join(challengeId) {
+  router.push({name: "participant.lobby", params: {challengeId: challengeId}})
 }
 
 
