@@ -82,12 +82,7 @@ public class OrganizeServiceImpl implements OrganizeService {
 
         List<Integer> answerResult = answerRepository.findAllCorrectAnswerIds(currentPublishedExam.getQuestion().getId());
 
-
-        // gen key for js size
-        byte[] byteKey = question.getEncryptKey();
-        String jsSideKey = encryptUtils.genKeyForJsSide(byteKey);
-
-        socketIOServer.getRoomOperations(challengeId + "").sendEvent("showCorrectAnswer", CorrectAnswerResponse.builder().corrects(answerResult).timeout(question.getTimeout()).encryptKey(jsSideKey).build());
+        socketIOServer.getRoomOperations(challengeId + "").sendEvent("showCorrectAnswer", CorrectAnswerResponse.builder().corrects(answerResult).timeout(question.getTimeout()).build());
 
         Page<StudentScoreResponse> response = studentAnswerRepository.findTopStudent(challengeId, Pageable.unpaged());
 
@@ -162,7 +157,7 @@ public class OrganizeServiceImpl implements OrganizeService {
         int countQuestion = questRepo.countQuestionInChallenge(challengeId);
         int questionOrder = questRepo.findNumberOfPublishedQuestion(challengeId) + 1;
 
-        PublishQuestion publishQuest = PublishQuestion.builder().id(question.getId()).ordinalNumber(question.getOrdinalNumber()).questionContent(question.getContent()).questionImage(question.getImage()).answerTimeLimit(question.getTimeLimit().getValue()).challengeId(challengeId).totalQuestion(countQuestion).questionOrder(questionOrder).theLastQuestion(countQuestion == questionOrder).build();
+        PublishQuestion publishQuest = PublishQuestion.builder().id(question.getId()).ordinalNumber(question.getOrdinalNumber()).content(question.getContent()).image(question.getImage()).timeLimit(question.getTimeLimit().getValue()).challengeId(challengeId).totalQuestion(countQuestion).questionOrder(questionOrder).theLastQuestion(countQuestion == questionOrder).build();
 
         List<AnswerResultResponse> publishAnswers = answerRepository.findAllPublishAnswer(question.getId());
 
@@ -187,7 +182,7 @@ public class OrganizeServiceImpl implements OrganizeService {
         // update ask date and decryptKey
         questRepo.updateAskDateAndPublishedOrderNumberEncryptKey(askDate, timeout, questionOrder, question.getId(), questionToken.getBytes());
 
-        socketIOServer.getRoomOperations(challengeId + "").sendEvent("publishQuestion", PublishedExam.builder().questionToken(questionToken).question(publishQuest).answers(publishAnswers).build());
+        socketIOServer.getRoomOperations(challengeId + "").sendEvent("publishQuestion", PublishedExam.builder().question(publishQuest).answers(publishAnswers).build());
 
 
     }
@@ -206,14 +201,11 @@ public class OrganizeServiceImpl implements OrganizeService {
         int countQuestion = questRepo.countQuestionInChallenge(challengeId);
         int questionOrder = questRepo.findNumberOfPublishedQuestion(challengeId) + 1;
 
-        PublishQuestion publishQuest = PublishQuestion.builder().id(currQuestion.getId()).ordinalNumber(currQuestion.getOrdinalNumber()).askDate(currQuestion.getAskDate()).questionContent(currQuestion.getContent()).questionImage(currQuestion.getImage()).answerTimeLimit(currQuestion.getTimeLimit().getValue()).challengeId(challengeId).totalQuestion(countQuestion).questionOrder(questionOrder).theLastQuestion(countQuestion == questionOrder).build();
+        PublishQuestion publishQuest = PublishQuestion.builder().id(currQuestion.getId()).ordinalNumber(currQuestion.getOrdinalNumber()).askDate(currQuestion.getAskDate()).content(currQuestion.getContent()).image(currQuestion.getImage()).timeLimit(currQuestion.getTimeLimit().getValue()).challengeId(challengeId).totalQuestion(countQuestion).questionOrder(questionOrder).theLastQuestion(countQuestion == questionOrder).build();
 
-        List<PublishAnswer> publishAnswers2 = answerRepository.findAllAnswerByQuestionIdAndAdminId(currQuestion.getId());
-
-        String questionToken = encryptUtils.generateQuestionToken(publishAnswers2, currQuestion.getAskDate(), currQuestion.getTimeLimit().getValue());
         List<AnswerResultResponse> publishAnswers = answerRepository.findAllPublishAnswer(currQuestion.getId());
 
-        return PublishedExam.builder().questionToken(questionToken).challenge(challengeResponse).question(publishQuest).answers(publishAnswers).build();
+        return PublishedExam.builder().challenge(challengeResponse).question(publishQuest).answers(publishAnswers).build();
 
     }
 

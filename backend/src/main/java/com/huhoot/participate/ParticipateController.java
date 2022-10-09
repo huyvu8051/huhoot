@@ -12,13 +12,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
-@RequestMapping("student")
+@RequestMapping("api/participant")
 @AllArgsConstructor
 public class ParticipateController {
 
     private final ParticipateService participateService;
 
-    @PostMapping("/sendAnswer")
+    @PostMapping
     public ResponseEntity<SendAnswerResponse> sendAnswer(@RequestBody StudentAnswerRequest request) throws Exception {
 
         Customer userDetails = (Customer) SecurityContextHolder.getContext().getAuthentication()

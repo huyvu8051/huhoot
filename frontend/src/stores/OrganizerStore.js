@@ -3,34 +3,27 @@ import {defineStore} from 'pinia'
 export const useOrganizerStore = defineStore('organizer', {
     state: () => ({
         challenge: {
-            autoOrganize: false,
-            challengeStatus: "",
-            createdDate: 0,
             id: 0,
-            modifiedDate: 0,
+            challengeStatus: "",
             title: ""
         },
         question: {
-            "id": 0,
-            "ordinalNumber": 0,
-            "questionContent": "",
-            "questionImage": "",
-            "answerTimeLimit": 0,
-            "askDate": 0,
-            "timeout": 0,
-            "point": "",
-            "answerOption": "",
-            "challengeId": 0,
-            "totalQuestion": 0,
-            "questionOrder": 0,
-            "theLastQuestion": false
+            id: 0,
+            content: "",
+            image: "",
+            timeLimit: 0,
+            askDate: 0,
+            timeout: 0,
+            challengeId: 0,
+            totalQuestion: 0,
+            questionOrder: 0,
+            theLastQuestion: false
         },
         answers: [{
-            "id": 0,
-            "content": "",
-            style: {}
+            id: 0,
+            content: "",
+            isCorrect: false
         }],
-        corrects: [0],
         participantsRank: [{
             fullName: "",
             id: 0,
@@ -47,11 +40,7 @@ export const useOrganizerStore = defineStore('organizer', {
             if (input.corrects) {
                 input.corrects.forEach(correct => {
                     const answer = state.answers.find(answer => answer.id = correct);
-                    answer.style = {
-                        background: "green",
-                        color: "white",
-                        border: '3px solid gold'
-                    }
+                    answer.isCorrect = true;
                 })
             }
 

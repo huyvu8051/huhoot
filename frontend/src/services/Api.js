@@ -1,4 +1,4 @@
-import {useAuthStore} from "@/stores/Auth";
+import {useAuthStore} from "@/stores/AuthStore";
 import axios from "axios";
 
 const {jwt} = useAuthStore();

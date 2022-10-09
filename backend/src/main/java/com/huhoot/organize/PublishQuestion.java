@@ -13,9 +13,9 @@ import lombok.NoArgsConstructor;
 public class PublishQuestion {
     private int id;
     private int ordinalNumber;
-    private String questionContent;
-    private String questionImage;
-    private int answerTimeLimit;
+    private String content;
+    private String image;
+    private int timeLimit;
 
     private long askDate;
     private long timeout;
@@ -30,24 +30,24 @@ public class PublishQuestion {
 
     private boolean theLastQuestion;
 
-    public PublishQuestion(int id, int ordinalNumber, String questionContent, String questionImage, int answerTimeLimit, Points point, int challengeId,int totalQuestion) {
+    public PublishQuestion(int id, int ordinalNumber, String questionContent, String questionImage, int timeLimit, Points point, int challengeId, int totalQuestion) {
         this.id = id;
         this.ordinalNumber = ordinalNumber;
-        this.questionContent = questionContent;
-        this.answerTimeLimit = answerTimeLimit;
+        this.content = questionContent;
+        this.timeLimit = timeLimit;
 
-        this.questionImage = questionImage;
+        this.image = questionImage;
         this.point = point;
         this.challengeId = challengeId;
         this.totalQuestion = totalQuestion;
     }
-    public PublishQuestion(int id, int ordinalNumber, String questionContent, String questionImage, int answerTimeLimit, Points point, Long askDate, int challengeId, int totalQuestion) {
+    public PublishQuestion(int id, int ordinalNumber, String questionContent, String questionImage, int timeLimit, Points point, Long askDate, int challengeId, int totalQuestion) {
         this.id = id;
         this.ordinalNumber = ordinalNumber;
-        this.questionContent = questionContent;
-        this.answerTimeLimit = answerTimeLimit;
+        this.content = questionContent;
+        this.timeLimit = timeLimit;
         this.askDate = askDate;
-        this.questionImage = questionImage;
+        this.image = questionImage;
         this.point = point;
         this.challengeId = challengeId;
         this.totalQuestion = totalQuestion;

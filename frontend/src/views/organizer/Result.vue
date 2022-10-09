@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import {useOrganizerStore} from "@/stores/Organizer";
+import {useChallengeStore} from "@/stores/ChallengeStore";
 import router from "@/router";
 import {useRoute} from "vue-router";
 
@@ -28,7 +28,7 @@ export default {
 
     const route = useRoute();
 
-    const participantsRank = useOrganizerStore().participantsRank;
+    const participantsRank = useChallengeStore().participantsRank;
 
     function next(){
       router.push({name:"organizer.request", params: route.params})

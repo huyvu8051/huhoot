@@ -9,6 +9,5 @@ import java.util.List;
 @Builder
 public class CorrectAnswerResponse {
     private List<Integer> corrects;
-    private String encryptKey;
     private long timeout;
 }

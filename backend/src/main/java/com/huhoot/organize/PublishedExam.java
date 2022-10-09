@@ -10,7 +10,6 @@ import java.util.List;
 @Builder
 public class PublishedExam {
     private ChallengeResponse challenge;
-    private String questionToken;
     private PublishQuestion question;
     private List<AnswerResultResponse> answers;
 

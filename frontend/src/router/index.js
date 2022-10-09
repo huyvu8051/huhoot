@@ -19,65 +19,65 @@ const router = createRouter({
             }]
         },
         {
-            path: '/organizer',
+            path: '/organizer/:challengeId',
             component: () => import('../views/organizer/Organizer.vue'),
             redirect: {name: "organizer.lobby"},
             children: [
 
                 {
-                    path: ":challengeId/lobby",
+                    path: "lobby",
                     name: "organizer.lobby",
                     component: () => import("@/views/organizer/Lobby.vue")
                 },
                 {
-                    path: ":challengeId/start",
+                    path: "start",
                     name: "organizer.start",
                     component: () => import("@/views/organizer/Start.vue")
                 },
                 {
-                    path: ":challengeId/request",
+                    path: "request",
                     name: "organizer.request",
                     component: () => import("@/views/organizer/Request.vue")
                 },
                 {
-                    path: ":challengeId/preview",
+                    path: "preview",
                     name: "organizer.preview",
                     component: () => import("@/views/organizer/Preview.vue")
                 },
                 {
-                    path: ":challengeId/ask",
+                    path: "ask",
                     name: "organizer.ask",
                     component: () => import("@/views/organizer/Ask.vue")
                 },
                 {
-                    path: ":challengeId/result",
+                    path: "result",
                     name: "organizer.result",
                     component: () => import("@/views/organizer/Result.vue")
                 }
             ]
         },
         {
-            path: '/participant',
+            path: '/participant/:challengeId',
             component: () => import('../views/participant/Participant.vue'),
             redirect: {name: "participant.lobby"},
             children: [
                 {
-                    path: ":challengeId/lobby",
+                    path: "lobby",
                     name: "participant.lobby",
                     component: () => import("@/views/participant/Lobby.vue")
                 },
                 {
-                    path: ":challengeId/start",
+                    path: "start",
                     name: "participant.start",
                     component: () => import("@/views/participant/Start.vue")
                 },
                 {
-                    path: ":challengeId/preview",
+                    path: "preview",
                     name: "participant.preview",
                     component: () => import("@/views/participant/Preview.vue")
                 },
                 {
-                    path: ":challengeId/ask",
+                    path: "ask",
                     name: "participant.ask",
                     component: () => import("@/views/participant/Ask.vue")
                 }

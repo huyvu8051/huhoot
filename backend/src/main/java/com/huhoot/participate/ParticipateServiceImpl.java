@@ -96,14 +96,13 @@ public class ParticipateServiceImpl implements ParticipateService {
         int countQuestion = questionRepository.countQuestionInChallenge(challengeId);
         int questionOrder = questionRepository.findNumberOfPublishedQuestion(challengeId) + 1;
 
-        PublishQuestion publishQuest = PublishQuestion.builder().id(currQuestion.getId()).ordinalNumber(currQuestion.getOrdinalNumber()).askDate(currQuestion.getAskDate()).timeout(currQuestion.getTimeout()).questionContent(currQuestion.getContent()).questionImage(currQuestion.getImage()).answerTimeLimit(currQuestion.getTimeLimit().getValue()).challengeId(challengeId).totalQuestion(countQuestion).questionOrder(questionOrder).theLastQuestion(countQuestion == questionOrder).build();
+        PublishQuestion publishQuest = PublishQuestion.builder().id(currQuestion.getId()).ordinalNumber(currQuestion.getOrdinalNumber()).askDate(currQuestion.getAskDate()).timeout(currQuestion.getTimeout()).content(currQuestion.getContent()).image(currQuestion.getImage()).timeLimit(currQuestion.getTimeLimit().getValue()).challengeId(challengeId).totalQuestion(countQuestion).questionOrder(questionOrder).theLastQuestion(countQuestion == questionOrder).build();
 
         List<PublishAnswer> publishAnswers2 = answerRepository.findAllAnswerByQuestionIdAndAdminId(currQuestion.getId());
 
-        String questionToken = encryptUtils.generateQuestionToken(publishAnswers2, currQuestion.getAskDate(), currQuestion.getTimeLimit().getValue());
         List<AnswerResultResponse> publishAnswers = answerRepository.findAllPublishAnswer(currQuestion.getId());
 
-        return PublishedExam.builder().questionToken(questionToken).challenge(challengeResponse).question(publishQuest).answers(publishAnswers).build();
+        return PublishedExam.builder().challenge(challengeResponse).question(publishQuest).answers(publishAnswers).build();
 
     }
 

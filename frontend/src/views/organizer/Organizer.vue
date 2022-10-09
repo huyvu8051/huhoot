@@ -5,49 +5,25 @@
 </template>
 
 <script>
-import io from "socket.io-client"
 import {useRoute} from "vue-router"
-
-import {useAuthStore} from "@/stores/Auth";
-import router from "@/router";
-import {useOrganizerStore} from "@/stores/Organizer";
+import connect from "@/services/Socket";
 import {ref} from "vue";
+import router from "@/router";
 
 export default {
   setup() {
 
-    const authStore = useAuthStore();
-    const organizerStore = useOrganizerStore();
-    const route = useRoute()
+    const route = useRoute();
+    const socket = connect(route.params.challengeId);
+    const connected = ref(false);
 
-    const socket = io("http://localhost:8082", {
-      query: {
-        challengeId: route.params.challengeId
-      },
-      transportOptions: {
-        polling: {
-          extraHeaders: {
-            'Authorization': 'Bearer ' + authStore.jwt
-          }
-        }
-      }
-    });
-
-    const connected = ref(false)
-
-    socket.on("connected", msg => {
-      organizerStore.update(msg);
+    socket.on("connected", () => {
       connected.value = true;
-    });
-    socket.on("showCorrectAnswer", organizerStore.update);
-
-
-    socket.on("publishQuestion", async msg => {
-      await useOrganizerStore().update(msg);
-      await router.push({name: "organizer.preview", params: route.params})
     })
 
-
+    socket.on("publishQuestion", () => {
+      router.push({name: "organizer.preview", params: route.params})
+    })
 
     return {
       connected
